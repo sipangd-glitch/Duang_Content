@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ดูดวงสตูดิโอ · ปลดหนี้ มีโชค</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chonburi&family=Sarabun:wght@300;400;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d1330;          /* ครามเข้ม ท้องฟ้ายามค่ำ */
+    --ink-2:#141b40;
+    --panel:#1a2150;
+    --panel-2:#212a64;
+    --line:rgba(213,178,99,.18);
+    --gold:#d5b263;         /* ทอง */
+    --gold-bright:#f1d488;
+    --gold-soft:rgba(213,178,99,.12);
+    --cream:#f3ecda;        /* เนื้อความ */
+    --muted:#9aa0c4;
+    --jade:#79c2a8;         /* สีรอง หยก */
+    --ember:#e8896b;        /* ไฮไลต์ */
+    --radius:18px;
+    --shadow:0 18px 50px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Sarabun',sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(213,178,99,.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 20%, rgba(121,194,168,.08), transparent 60%),
+      var(--ink);
+    color:var(--cream);
+    line-height:1.65;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:22px 18px 80px}
+
+  /* ---------- Header ---------- */
+  header{position:relative;text-align:center;padding:30px 10px 22px}
+  .coin{
+    width:74px;height:74px;border-radius:50%;margin:0 auto 14px;
+    background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 55%, #9a7c34 100%);
+    box-shadow:0 0 0 4px rgba(213,178,99,.15), 0 0 38px rgba(213,178,99,.45);
+    display:grid;place-items:center;font-size:34px;
+    animation:spin 14s linear infinite;
+  }
+  @keyframes spin{to{transform:rotateY(360deg)}}
+  h1{font-family:'Chonburi',serif;font-weight:400;font-size:clamp(28px,6vw,44px);
+     color:var(--gold-bright);letter-spacing:.5px;line-height:1.2}
+  .sub{color:var(--muted);font-size:15px;margin-top:6px}
+  .seal{display:inline-flex;gap:8px;align-items:center;margin-top:14px;
+    font-family:'Bai Jamjuree';font-size:13px;color:var(--gold);
+    border:1px solid var(--line);border-radius:999px;padding:6px 16px;background:var(--gold-soft)}
+
+  /* ---------- Tabs ---------- */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:26px 0 18px}
+  .tab{font-family:'Bai Jamjuree';font-size:14px;color:var(--muted);cursor:pointer;
+    border:1px solid var(--line);background:var(--panel);padding:10px 18px;border-radius:999px;
+    transition:.2s;user-select:none}
+  .tab:hover{color:var(--cream);border-color:rgba(213,178,99,.4)}
+  .tab.active{background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:#221a06;border-color:transparent;font-weight:600}
+
+  /* ---------- Controls ---------- */
+  .console{background:linear-gradient(180deg,var(--panel),var(--ink-2));
+    border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .ctrl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;align-items:end}
+  label.fld{display:block;font-family:'Bai Jamjuree';font-size:12px;color:var(--gold);
+    letter-spacing:.4px;margin-bottom:6px;text-transform:uppercase}
+  input[type=date],select{width:100%;font-family:'Sarabun';font-size:15px;color:var(--cream);
+    background:var(--ink);border:1px solid var(--line);border-radius:12px;padding:11px 13px;outline:none}
+  input[type=date]:focus,select:focus{border-color:var(--gold)}
+  input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.7) sepia(1) saturate(3) hue-rotate(5deg)}
+  .seg{display:flex;gap:6px}
+  .seg button{flex:1;font-family:'Sarabun';font-size:14px;color:var(--muted);background:var(--ink);
+    border:1px solid var(--line);border-radius:12px;padding:11px 8px;cursor:pointer;transition:.15s}
+  .seg button.on{background:var(--gold-soft);color:var(--gold-bright);border-color:var(--gold)}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .btn{font-family:'Bai Jamjuree';font-size:15px;border:none;border-radius:12px;padding:13px 20px;
+    cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:8px}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:#221a06;font-weight:600;flex:1;justify-content:center;min-width:200px}
+  .btn-gold:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  .btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold-bright)}
+
+  /* ---------- Toolbar above results ---------- */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:26px 0 14px}
+  .toolbar .count{font-family:'Bai Jamjuree';color:var(--muted);font-size:13px;margin-right:auto}
+  .mini{font-family:'Bai Jamjuree';font-size:13px;border:1px solid var(--line);background:var(--panel);
+    color:var(--cream);border-radius:10px;padding:9px 14px;cursor:pointer;transition:.15s;display:inline-flex;gap:6px;align-items:center}
+  .mini:hover{border-color:var(--gold);color:var(--gold-bright)}
+  .mini.pin:hover{border-color:var(--ember);color:var(--ember)}
+  .mini.fb:hover{border-color:var(--jade);color:var(--jade)}
+
+  /* ---------- Cards ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+  .card{background:linear-gradient(180deg,var(--panel),var(--ink-2));border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(300px 120px at 100% 0, rgba(213,178,99,.10), transparent 70%);pointer-events:none}
+  .card-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;position:relative}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:24px;
+    background:var(--gold-soft);border:1px solid var(--line);flex-shrink:0}
+  .card-head h3{font-family:'Chonburi';font-weight:400;font-size:19px;color:var(--gold-bright);line-height:1.2}
+  .card-head .range{font-family:'Bai Jamjuree';font-size:11px;color:var(--muted)}
+  .stars{margin-left:auto;color:var(--gold);font-size:14px;letter-spacing:1px;flex-shrink:0}
+  .stars .off{color:rgba(255,255,255,.14)}
+  .lines{font-size:14.5px}
+  .lines .row{display:flex;gap:8px;padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.06)}
+  .lines .row:last-child{border-bottom:none}
+  .lines .ic{flex-shrink:0}
+  .lines b{color:var(--gold);font-weight:600}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .chip{font-family:'Bai Jamjuree';font-size:12px;background:var(--ink);border:1px solid var(--line);
+    border-radius:999px;padding:5px 12px;color:var(--cream)}
+  .chip .k{color:var(--muted);margin-right:4px}
+  .chip .swatch{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle;border:1px solid rgba(255,255,255,.3)}
+  .card-foot{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+  .card-foot .mini{font-size:12px;padding:7px 11px}
+
+  /* oracle */
+  .oracle-card .badge{font-size:26px}
+  .oracle-meaning{font-size:15.5px;margin:6px 0}
+  .oracle-advice{font-size:14px;color:var(--muted);border-left:2px solid var(--gold);padding-left:10px;margin-top:8px}
+
+  /* lucky module */
+  .lucky{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:6px}
+  .lucky .tile{background:var(--ink);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
+  .lucky .tile .lab{font-family:'Bai Jamjuree';font-size:12px;color:var(--gold);text-transform:uppercase}
+  .lucky .tile .val{font-family:'Chonburi';font-size:30px;color:var(--gold-bright);margin-top:4px}
+  .lucky .tile .val.sm{font-size:20px;font-family:'Sarabun';font-weight:700;color:var(--cream)}
+  .blessing{text-align:center;font-family:'Chonburi';font-size:clamp(20px,4vw,28px);color:var(--gold-bright);
+    margin:22px 0 6px;line-height:1.4}
+
+  /* empty */
+  .empty{text-align:center;color:var(--muted);padding:48px 20px}
+  .empty .big{font-size:46px;margin-bottom:10px;opacity:.5}
+
+  /* toast */
+  #toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,40px);opacity:0;
+    background:var(--gold);color:#221a06;font-family:'Bai Jamjuree';font-weight:600;font-size:14px;
+    padding:12px 22px;border-radius:999px;box-shadow:var(--shadow);transition:.3s;z-index:50;pointer-events:none}
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:50px;font-family:'Bai Jamjuree'}
+  footer a{color:var(--gold)}
+
+  @media (max-width:520px){
+    .actions{flex-direction:column}
+    .btn-gold{min-width:0;width:100%}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .coin{animation:none}
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="coin">🪙</div>
+    <h1>ดูดวงสตูดิโอ</h1>
+    <div class="sub">เครื่องมือปั้นคอนเทนต์ดูดวง · เพจ "ปลดหนี้ มีโชค"</div>
+    <div class="seal">✦ <span id="sealDate"></span> ✦</div>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-mod="zodiac">♈ ดวง 12 ราศี</div>
+    <div class="tab" data-mod="chinese">🐉 นักษัตรจีน</div>
+    <div class="tab" data-mod="oracle">🃏 ไพ่ทำนาย</div>
+    <div class="tab" data-mod="lucky">🔢 เลข·สีมงคล</div>
+    <div class="tab" data-mod="money">💰 ดวงการเงิน</div>
+    <div class="tab" data-mod="birthday">🎂 ดวงประจำวันเกิด</div>
+  </div>
+
+  <div class="console">
+    <div class="ctrl-grid">
+      <div>
+        <label class="fld">วันที่ของดวง</label>
+        <input type="date" id="dateIn">
+      </div>
+      <div id="bdayWrap" style="display:none">
+        <label class="fld">เกิดวัน</label>
+        <div class="seg" id="bdaySel" style="flex-wrap:wrap">
+          <button data-d="1">จันทร์</button><button data-d="2">อังคาร</button><button data-d="3">พุธ</button>
+          <button data-d="4">พฤหัสฯ</button><button data-d="5">ศุกร์</button><button data-d="6">เสาร์</button><button data-d="0">อาทิตย์</button>
+        </div>
+      </div>
+    </div>
+    <div class="actions" id="actions"></div>
+  </div>
+
+  <div class="toolbar" id="toolbar" style="display:none">
+    <span class="count" id="count"></span>
+    <button class="mini" id="copyAll">📋 คัดลอกทั้งหมด</button>
+    <button class="mini" id="exportTxt">💾 บันทึก .txt</button>
+    <button class="mini pin" id="pin">📌 Pinterest</button>
+    <button class="mini fb" id="fb">📘 Facebook</button>
+  </div>
+
+  <div id="results">
+    <div class="empty">
+      <div class="big">🔮</div>
+      เลือกหมวด แล้วกดปุ่มสีทองด้านบนเพื่อสร้างคอนเทนต์
+    </div>
+  </div>
+
+  <footer>
+    ทำงานในเบราว์เซอร์ล้วน · ไม่ใช้ API · พร้อมโฮสต์บน Netlify<br>
+    ดวงจะคงที่ทั้งวันตามวันที่ที่เลือก เปลี่ยน "สำนวน" เพื่อสุ่มถ้อยคำใหม่
+  </footer>
+</div>
+
+<div id="toast"></div>
+
+<style>
+  .astro{background:linear-gradient(180deg,var(--panel-2),var(--ink-2));border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px;margin-bottom:18px;box-shadow:var(--shadow)}
+  .astro h2{font-family:'Chonburi';font-weight:400;font-size:18px;color:var(--gold-bright);margin-bottom:4px}
+  .astro .astro-sub{font-family:'Bai Jamjuree';font-size:12px;color:var(--muted);margin-bottom:14px}
+  .planets{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px}
+  .pl{background:var(--ink);border:1px solid var(--line);border-radius:11px;padding:9px 11px}
+  .pl .nm{font-family:'Bai Jamjuree';font-size:11px;color:var(--muted)}
+  .pl .sg{font-size:14.5px;color:var(--cream);font-weight:600}
+  .pl .rx{color:var(--ember);font-family:'Bai Jamjuree';font-size:11px}
+  .astro-foot{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-top:12px}
+  .af{background:var(--gold-soft);border:1px solid var(--line);border-radius:11px;padding:10px 12px}
+  .af .nm{font-family:'Bai Jamjuree';font-size:11px;color:var(--gold)}
+  .af .vl{font-size:14px;color:var(--cream);margin-top:2px}
+  .af .sw{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;margin-right:5px;border:1px solid rgba(255,255,255,.3)}
+  .retro-banner{display:flex;gap:10px;align-items:center;background:rgba(232,137,107,.12);
+    border:1px solid rgba(232,137,107,.4);border-radius:12px;padding:11px 14px;margin-bottom:14px;font-size:14px}
+  .retro-banner b{color:var(--ember)}
+  .influence{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
+  .inf{font-family:'Bai Jamjuree';font-size:11px;background:var(--ink);border:1px solid var(--line);
+    border-radius:999px;padding:3px 9px;color:var(--jade)}
+  .inf.warn{color:var(--ember)}
+  .oc-img{width:100%;height:170px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+
+  /* spread & money */
+  .spread-title{font-family:'Chonburi';font-weight:400;font-size:18px;color:var(--gold-bright);margin:0 0 14px}
+  .spread-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .pos-badge{font-family:'Bai Jamjuree';font-size:11px;color:var(--gold);background:var(--gold-soft);
+    border-radius:999px;padding:3px 10px;display:inline-block;margin-bottom:6px}
+  .money-preview{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .mp-head{font-family:'Bai Jamjuree';color:var(--gold-bright);font-size:15px;align-self:flex-start}
+  .mp-img{max-width:100%;border-radius:12px;border:1px solid var(--line);box-shadow:var(--shadow)}
+  .mp-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .oc-emoji{height:120px;display:grid;place-items:center;font-size:60px;background:var(--gold-soft);border-radius:12px;border:1px solid var(--line)}
+  .oc-rev{transform:rotate(180deg)}
+  .oc-img-wrap{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .oc-img-wrap.oc-rev img{transform:rotate(180deg)}
+  .oracle-rev{border-color:rgba(232,137,107,.4)!important}
+  .rev-badge{font-family:'Bai Jamjuree';font-size:12px;color:var(--ember);background:rgba(232,137,107,.12);border-radius:999px;padding:4px 12px;display:inline-block;margin:4px 0}
+  .rev-meaning{color:var(--ember)!important}
+
+  /* ---------- money infographic editor ---------- */
+  .editor-stage{position:relative;display:block;width:100%;max-width:380px;margin:0 auto;
+    border-radius:12px;overflow:hidden;border:1px solid var(--line);touch-action:none}
+  .editor-stage img{display:block;width:100%;height:auto;pointer-events:none;user-select:none}
+  .ebox{position:absolute;box-sizing:border-box;border:1.5px dashed rgba(255,210,110,.85)}
+  .ebox .etext{width:100%;height:100%;overflow:hidden;outline:none;text-align:center;
+    font-family:'Bai Jamjuree',sans-serif;line-height:1.3;display:flex;align-items:center;justify-content:center;
+    flex-wrap:wrap;cursor:text;padding:2px;word-break:break-word;white-space:pre-wrap}
+  .ebox .edrag{position:absolute;top:-10px;left:-10px;width:18px;height:18px;line-height:18px;
+    text-align:center;background:var(--gold);border-radius:50%;cursor:move;font-size:11px;color:#221a06;
+    z-index:5;user-select:none}
+  .ebox .eresize{position:absolute;right:-7px;bottom:-7px;width:14px;height:14px;background:var(--gold);
+    border-radius:3px;cursor:nwse-resize;z-index:5}
+  .ebox .efsize{position:absolute;top:-10px;right:-10px;display:flex;gap:2px;z-index:5}
+  .ebox .efsize button{width:17px;height:17px;font-size:9px;line-height:1;border:none;border-radius:3px;
+    background:var(--ink);color:var(--gold-bright);cursor:pointer;padding:0}
+  .ebox .edel{position:absolute;bottom:-10px;left:-10px;width:18px;height:18px;line-height:16px;
+    text-align:center;border:none;border-radius:50%;background:var(--ember);color:#221a06;font-size:11px;
+    font-weight:700;cursor:pointer;padding:0;z-index:5}
+  .slot-bar{display:flex;gap:8px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+  .slotbtn{position:relative;width:46px;height:46px;border-radius:8px;border:2px solid var(--line);
+    background:var(--ink);overflow:hidden;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}
+  .slotbtn img{width:100%;height:100%;object-fit:cover}
+  .slotbtn span{color:var(--muted);font-size:18px}
+  .slotbtn b{position:absolute;bottom:1px;right:2px;font-size:9px;background:rgba(0,0,0,.55);
+    color:var(--gold-bright);border-radius:4px;padding:0 3px;font-family:'Bai Jamjuree'}
+  .slotbtn.active{border-color:var(--gold)}
+  .slotbtn.empty{border-style:dashed}
+</style>
+
+<script>
+/* ============================================================
+   ดูดวงสตูดิโอ v2 — เอนจินคำนวณตำแหน่งดาว (Schlyter, ย่อ) + ให้คะแนนตามมุมดาว
+   no API · ทำงานในเบราว์เซอร์ล้วน
+   ============================================================ */
+
+/* ---------- astro core ---------- */
+const PI=Math.PI;
+const rev=x=>{x%=360;return x<0?x+360:x;};
+const sind=x=>Math.sin(x*PI/180), cosd=x=>Math.cos(x*PI/180);
+const atan2d=(y,x)=>Math.atan2(y,x)*180/PI;
+function dayNumber(y,m,D,h){return 367*y-Math.floor(7*(y+Math.floor((m+9)/12))/4)+Math.floor(275*m/9)+D-730530+(h||12)/24;}
+function eccAnom(M,e){let E=M+(180/PI)*e*sind(M)*(1+e*cosd(M));for(let i=0;i<6;i++)E=E-(E-(180/PI)*e*sind(E)-M)/(1-e*cosd(E));return E;}
+function sunPos(d){const w=282.9404+4.70935e-5*d,e=0.016709-1.151e-9*d,M=rev(356.0470+0.9856002585*d);
+  const E=M+(180/PI)*e*sind(M)*(1+e*cosd(M)),xv=cosd(E)-e,yv=Math.sqrt(1-e*e)*sind(E);
+  const v=atan2d(yv,xv),r=Math.sqrt(xv*xv+yv*yv),lon=rev(v+w);
+  return{lon,r,M,w,xs:r*cosd(lon),ys:r*sind(lon),L:rev(M+w)};}
+function moonPos(d,sun){const N=rev(125.1228-0.0529538083*d),i=5.1454,w=rev(318.0634+0.1643573223*d),a=60.2666,e=0.054900,M=rev(115.3654+13.0649929509*d);
+  const E=eccAnom(M,e),xv=a*(cosd(E)-e),yv=a*Math.sqrt(1-e*e)*sind(E),v=atan2d(yv,xv),r=Math.sqrt(xv*xv+yv*yv);
+  let xe=r*(cosd(N)*cosd(v+w)-sind(N)*sind(v+w)*cosd(i)),ye=r*(sind(N)*cosd(v+w)+cosd(N)*sind(v+w)*cosd(i));
+  let lon=rev(atan2d(ye,xe));
+  const Ls=sun.L,Lm=rev(M+w+N),Ms=sun.M,Mm=M,Dd=rev(Lm-Ls),F=rev(Lm-N);
+  lon+=-1.274*sind(Mm-2*Dd)+0.658*sind(2*Dd)-0.186*sind(Ms)-0.059*sind(2*Mm-2*Dd)-0.057*sind(Mm-2*Dd+Ms)
+       +0.053*sind(Mm+2*Dd)+0.046*sind(2*Dd-Ms)+0.041*sind(Mm-Ms)-0.035*sind(Dd)-0.031*sind(Mm+Ms)
+       -0.015*sind(2*F-2*Dd)+0.011*sind(Mm-4*Dd);
+  return{lon:rev(lon),r};}
+const ELEMS={
+  mercury:d=>({N:rev(48.3313+3.24587e-5*d),i:7.0047,w:rev(29.1241+1.01444e-5*d),a:0.387098,e:0.205635+5.59e-10*d,M:rev(168.6562+4.0923344368*d)}),
+  venus:  d=>({N:rev(76.6799+2.46590e-5*d),i:3.3946,w:rev(54.8910+1.38374e-5*d),a:0.723330,e:0.006773-1.302e-9*d,M:rev(48.0052+1.6021302244*d)}),
+  mars:   d=>({N:rev(49.5574+2.11081e-5*d),i:1.8497,w:rev(286.5016+2.92961e-5*d),a:1.523688,e:0.093405+2.516e-9*d,M:rev(18.6021+0.5240207766*d)}),
+  jupiter:d=>({N:rev(100.4542+2.76854e-5*d),i:1.3030,w:rev(273.8777+1.64505e-5*d),a:5.20256,e:0.048498+4.469e-9*d,M:rev(19.8950+0.0830853001*d)}),
+  saturn: d=>({N:rev(113.6634+2.38980e-5*d),i:2.4886,w:rev(339.3939+2.97661e-5*d),a:9.55475,e:0.055546-9.499e-9*d,M:rev(316.9670+0.0334442282*d)}),
+};
+function planetGeo(name,d,sun){const el=ELEMS[name](d),e=el.e,E=eccAnom(el.M,e);
+  const xv=el.a*(cosd(E)-e),yv=el.a*Math.sqrt(1-e*e)*sind(E),v=atan2d(yv,xv),r=Math.sqrt(xv*xv+yv*yv),N=el.N,w=el.w,i=el.i;
+  const xh=r*(cosd(N)*cosd(v+w)-sind(N)*sind(v+w)*cosd(i)),yh=r*(sind(N)*cosd(v+w)+cosd(N)*sind(v+w)*cosd(i));
+  let lon=rev(atan2d(yh+sun.ys,xh+sun.xs));
+  if(name==='jupiter'||name==='saturn'){const Mj=ELEMS.jupiter(d).M,Ms=ELEMS.saturn(d).M;let dl=0;
+    if(name==='jupiter')dl=-0.332*sind(2*Mj-5*Ms-67.6)-0.056*sind(2*Mj-2*Ms+21)+0.042*sind(3*Mj-5*Ms+21)-0.036*sind(Mj-2*Ms)+0.022*cosd(Mj-Ms)+0.023*sind(2*Mj-3*Ms+52)-0.016*sind(Mj-5*Ms-69);
+    else dl=0.812*sind(2*Mj-5*Ms-67.6)-0.229*cosd(2*Mj-4*Ms-2)+0.119*sind(Mj-2*Ms-3)+0.046*sind(2*Mj-6*Ms-69)+0.014*sind(Mj-3*Ms+32);
+    lon=rev(lon+dl);}
+  return{lon,r};}
+function isRetro(name,d,sun){const l1=planetGeo(name,d,sun).lon,s2=sunPos(d+2),l2=planetGeo(name,d+2,s2).lon;return rev(l2-l1)>180;}
+function computeSky(iso){
+  const [y,m,D]=iso.split('-').map(Number);
+  const wd=new Date(iso+'T00:00:00').getDay();
+  const d=dayNumber(y,m,D,12),sun=sunPos(d),moon=moonPos(d,sun);
+  const P={sun:{lon:sun.lon},moon:{lon:moon.lon},
+    mercury:planetGeo('mercury',d,sun),venus:planetGeo('venus',d,sun),mars:planetGeo('mars',d,sun),
+    jupiter:planetGeo('jupiter',d,sun),saturn:planetGeo('saturn',d,sun)};
+  const retro={};['mercury','venus','mars','jupiter','saturn'].forEach(n=>retro[n]=isRetro(n,d,sun));
+  const elong=rev(moon.lon-sun.lon),illum=(1-cosd(elong))/2;
+  return{iso,y,m,D,wd,P,retro,elong,illum};
+}
+
+/* ---------- zodiac framework ---------- */
+const SIGNS=[
+  {k:'aries',th:'ราศีเมษ',short:'เมษ',em:'♈',range:'13 เม.ย. – 14 พ.ค.',el:'ไฟ',sym:'golden ram'},
+  {k:'taurus',th:'ราศีพฤษภ',short:'พฤษภ',em:'♉',range:'15 พ.ค. – 14 มิ.ย.',el:'ดิน',sym:'golden bull'},
+  {k:'gemini',th:'ราศีเมถุน',short:'เมถุน',em:'♊',range:'15 มิ.ย. – 14 ก.ค.',el:'ลม',sym:'celestial twins'},
+  {k:'cancer',th:'ราศีกรกฎ',short:'กรกฎ',em:'♋',range:'15 ก.ค. – 16 ส.ค.',el:'น้ำ',sym:'moonlit crab'},
+  {k:'leo',th:'ราศีสิงห์',short:'สิงห์',em:'♌',range:'17 ส.ค. – 16 ก.ย.',el:'ไฟ',sym:'golden lion'},
+  {k:'virgo',th:'ราศีกันย์',short:'กันย์',em:'♍',range:'17 ก.ย. – 16 ต.ค.',el:'ดิน',sym:'serene maiden'},
+  {k:'libra',th:'ราศีตุลย์',short:'ตุลย์',em:'♎',range:'17 ต.ค. – 15 พ.ย.',el:'ลม',sym:'golden scales'},
+  {k:'scorpio',th:'ราศีพิจิก',short:'พิจิก',em:'♏',range:'16 พ.ย. – 15 ธ.ค.',el:'น้ำ',sym:'mystic scorpion'},
+  {k:'saggi',th:'ราศีธนู',short:'ธนู',em:'♐',range:'16 ธ.ค. – 14 ม.ค.',el:'ไฟ',sym:'celestial archer'},
+  {k:'capri',th:'ราศีมังกร',short:'มังกร',em:'♑',range:'15 ม.ค. – 12 ก.พ.',el:'ดิน',sym:'sea-goat'},
+  {k:'aqua',th:'ราศีกุมภ์',short:'กุมภ์',em:'♒',range:'13 ก.พ. – 14 มี.ค.',el:'ลม',sym:'water bearer'},
+  {k:'pisces',th:'ราศีมีน',short:'มีน',em:'♓',range:'15 มี.ค. – 12 เม.ย.',el:'น้ำ',sym:'two koi fish'},
+];
+const SIGN_SHORT=SIGNS.map(s=>s.short);
+const CHINESE=[
+  {k:'rat',th:'ปีชวด',em:'🐀',sub:'หนู',sym:'jade rat'},{k:'ox',th:'ปีฉลู',em:'🐂',sub:'วัว',sym:'golden ox'},
+  {k:'tiger',th:'ปีขาล',em:'🐅',sub:'เสือ',sym:'majestic tiger'},{k:'rabbit',th:'ปีเถาะ',em:'🐇',sub:'กระต่าย',sym:'moon rabbit'},
+  {k:'dragon',th:'ปีมะโรง',em:'🐉',sub:'มังกร',sym:'golden dragon'},{k:'snake',th:'ปีมะเส็ง',em:'🐍',sub:'งูเล็ก',sym:'emerald serpent'},
+  {k:'horse',th:'ปีมะเมีย',em:'🐎',sub:'ม้า',sym:'noble horse'},{k:'goat',th:'ปีมะแม',em:'🐐',sub:'แพะ',sym:'gentle goat'},
+  {k:'monkey',th:'ปีวอก',em:'🐒',sub:'ลิง',sym:'clever monkey'},{k:'rooster',th:'ปีระกา',em:'🐓',sub:'ไก่',sym:'golden rooster'},
+  {k:'dog',th:'ปีจอ',em:'🐕',sub:'สุนัข',sym:'loyal dog'},{k:'pig',th:'ปีกุน',em:'🐖',sub:'หมู',sym:'fortune pig'},
+];
+const PLANET_TH={sun:['อาทิตย์','☀️'],moon:['จันทร์','🌙'],mercury:['พุธ','☿'],venus:['ศุกร์','♀'],mars:['อังคาร','♂'],jupiter:['พฤหัส','♃'],saturn:['เสาร์','♄']};
+const signIdx=lon=>Math.floor(rev(lon)/30);
+function aspect(a,b){const sep=((b-a)%12+12)%12,d=Math.min(sep,12-sep);
+  return d===0?'conj':d===4?'trine':d===2?'sextile':d===3?'square':d===6?'opp':'minor';}
+const harmon=t=>t==='trine'||t==='sextile'||t==='conj';
+const hard=t=>t==='square'||t==='opp';
+
+/* ---------- Thai day system ---------- */
+const THAI_DAY=[
+  {th:'อาทิตย์',mong:['แดง','#e0413f'],kala:['ฟ้า/น้ำเงิน','#3f7fd0'],time:'06:00–07:30 น.'},
+  {th:'จันทร์', mong:['เหลือง/ครีม','#f1c84b'],kala:['แดง','#e0413f'],time:'08:00–09:30 น.'},
+  {th:'อังคาร', mong:['ชมพู','#e879a8'],kala:['เหลือง/ขาว','#f0ece0'],time:'15:00–16:30 น.'},
+  {th:'พุธ',    mong:['เขียว','#39a96b'],kala:['ชมพู','#e879a8'],time:'10:00–11:30 น.'},
+  {th:'พฤหัสบดี',mong:['ส้ม/แดง','#ef8a3c'],kala:['ดำ/ม่วง','#8b5fd0'],time:'07:00–08:30 น.'},
+  {th:'ศุกร์',  mong:['ฟ้า/น้ำเงิน','#3f7fd0'],kala:['ส้ม/น้ำตาล','#a9762f'],time:'09:00–10:30 น.'},
+  {th:'เสาร์',  mong:['ดำ/ม่วง','#8b5fd0'],kala:['เขียว','#39a96b'],time:'16:00–17:30 น.'},
+];
+/* ดวงประจำวันเกิด — ดัชนีตรงกับ Date.getDay() (0=อาทิตย์ ... 6=เสาร์) เหมือน THAI_DAY */
+const BIRTHDAY_INFO=[
+  {em:'☀️',personality:'มีความเป็นผู้นำสูง มั่นใจในตัวเอง ใจกว้าง ชอบช่วยเหลือผู้อื่น และมักเป็นจุดสนใจของกลุ่ม',
+    strength:'ความกล้าตัดสินใจ ภาวะผู้นำ และพลังบวกที่ส่งต่อให้คนรอบข้างได้เสมอ',
+    watch:'อารมณ์ร้อนเร็ว ดื้อ และบางครั้งยึดความคิดตัวเองมากเกินไปจนไม่ฟังคนอื่น',
+    love:'รักแบบเปิดเผยตรงไปตรงมา ต้องการคนที่ยอมรับและสนับสนุนความเป็นตัวของตัวเอง',
+    money:'มีลาภจากตำแหน่งหรือความน่าเชื่อถือ การเงินมักดีขึ้นเมื่อกล้าตัดสินใจในจังหวะที่ใช่',
+    work:'เหมาะกับงานที่ได้นำทีมหรือเป็นหน้าฉาก มีโอกาสเติบโตเร็วถ้าได้ใช้ความเป็นผู้นำ',
+    health:'ระวังเรื่องความดันและหัวใจจากความเครียดสะสม ควรพักผ่อนให้เพียงพอ'},
+  {em:'🌙',personality:'อ่อนโยน ละเอียดอ่อน เอาใจใส่ผู้อื่น มีสัญชาตญาณสูงและมักเป็นที่พึ่งของคนรอบข้าง',
+    strength:'ความเห็นอกเห็นใจ ความอ่อนน้อม และความสามารถในการประนีประนอม',
+    watch:'อ่อนไหวง่าย คิดมาก และหวั่นไหวกับคำพูดของคนอื่นได้ง่าย',
+    love:'รักลึกซึ้งและทุ่มเท ต้องการความมั่นคงทางใจมากกว่าความหวือหวา',
+    money:'การเงินมาจากความขยันสะสม เหมาะกับการเก็บออมระยะยาวมากกว่าการเสี่ยง',
+    work:'เหมาะกับงานบริการ ดูแลผู้คน หรือสายสร้างสรรค์ที่ใช้ความละเอียดอ่อน',
+    health:'ระวังเรื่องกระเพาะและอารมณ์แปรปรวน ควรหาเวลาพักใจสม่ำเสมอ'},
+  {em:'♂️',personality:'กระตือรือร้น กล้าหาญ ชอบความท้าทาย และมีพลังในการลงมือทำสูง',
+    strength:'ความกล้า ความขยัน และพลังในการผ่านอุปสรรคด้วยตัวเอง',
+    watch:'ใจร้อน หุนหันพลันแล่น และอาจทะเลาะกับคนรอบข้างจากอารมณ์ชั่ววูบ',
+    love:'รักแบบดุดันจริงจัง พร้อมปกป้องคนรัก แต่ต้องระวังคำพูดที่ตรงเกินไป',
+    money:'มีโอกาสได้เงินจากความขยันและการลงมือทำ แต่ต้องระวังการใช้จ่ายตามอารมณ์',
+    work:'เหมาะกับงานที่ต้องใช้พลังและความกล้า เช่น งานบุกเบิกหรือลงสนามเอง',
+    health:'ระวังอุบัติเหตุและของมีคม ควรมีสติก่อนลงมือทำสิ่งเสี่ยง'},
+  {em:'☿️',personality:'ฉลาด ปรับตัวเก่ง พูดเก่ง ชอบเรียนรู้สิ่งใหม่และสื่อสารกับคนได้หลากหลาย',
+    strength:'ความคิดไว ทักษะการสื่อสาร และความสามารถในการปรับตัวกับสถานการณ์',
+    watch:'ใจง่าย เปลี่ยนใจบ่อย และบางครั้งคิดมากเกินจนตัดสินใจช้า',
+    love:'รักแบบเพื่อนคู่คิด ชอบคนที่พูดคุยเข้าขากันมากกว่าความโรแมนติกหวานๆ',
+    money:'มีโชคจากการเจรจาค้าขายหรือสื่อสาร เหมาะกับงานที่ใช้ปากและไอเดีย',
+    work:'เหมาะกับงานสื่อสาร งานขาย หรือสายที่ต้องคิดเร็วปรับตัวเร็ว',
+    health:'ระวังเรื่องระบบประสาทและการนอนหลับจากความคิดที่ไม่หยุดพัก'},
+  {em:'♃',personality:'ใจดี มีเมตตา รักความรู้ และมักได้รับความเชื่อถือจากคนรอบข้างเสมอ',
+    strength:'ความใจกว้าง สติปัญญา และบุญบารมีที่สั่งสมจากการให้',
+    watch:'ใจดีเกินไปจนถูกเอาเปรียบ และบางครั้งตัดสินใจช้าเพราะคิดถึงใจคนอื่นมากไป',
+    love:'รักแบบทุ่มเทดูแล เหมาะกับความสัมพันธ์ที่มั่นคงและให้เกียรติกัน',
+    money:'มีเกณฑ์ลาภลอยและโชคจากผู้ใหญ่ การเงินมักดีขึ้นเมื่อทำบุญหรือช่วยเหลือผู้อื่น',
+    work:'เหมาะกับงานด้านการสอน ให้คำปรึกษา หรือสายที่ต้องใช้ความน่าเชื่อถือ',
+    health:'ระวังเรื่องน้ำหนักตัวและตับ ควรดูแลเรื่องอาหารการกินให้สมดุล'},
+  {em:'♀️',personality:'มีเสน่ห์ รักความสวยงาม ชอบเข้าสังคม และมักเป็นที่รักของคนรอบข้าง',
+    strength:'เสน่ห์ดึงดูด ความคิดสร้างสรรค์ และทักษะด้านศิลปะหรือความสัมพันธ์',
+    watch:'ฟุ้งเฟ้อ ใช้จ่ายเกินตัว และบางครั้งหวั่นไหวกับความรักง่ายเกินไป',
+    love:'รักหวานโรแมนติก มีคนเข้ามาในชีวิตเสมอ แต่ต้องเลือกให้ดีก่อนผูกพัน',
+    money:'มีโชคจากความสามารถด้านศิลปะหรือการเจรจา แต่ควรวางแผนการเงินให้รัดกุม',
+    work:'เหมาะกับงานสายความสวยงาม ศิลปะ หรือบริการที่ต้องใช้เสน่ห์',
+    health:'ระวังเรื่องไตและระบบสืบพันธุ์ ควรดูแลสุขภาพอย่างสม่ำเสมอ'},
+  {em:'♄',personality:'อดทน มีระเบียบ ทำงานหนัก และมักประสบความสำเร็จด้วยความพยายามของตัวเอง',
+    strength:'ความอดทน วินัย และความรับผิดชอบที่สูงกว่าคนทั่วไป',
+    watch:'เคร่งเครียดเกินไป มองโลกในแง่ลบ และบางครั้งเก็บตัวจนขาดความสุขในชีวิต',
+    love:'รักแบบมั่นคงระยะยาว ไม่หวือหวาแต่จริงใจและรับผิดชอบ',
+    money:'การเงินมาจากความอดทนสะสม ช้าแต่มั่นคง เหมาะกับการลงทุนระยะยาว',
+    work:'เหมาะกับงานที่ต้องใช้ความอดทนและวินัย เช่น งานบริหารหรือสายวิชาการ',
+    health:'ระวังเรื่องกระดูกและข้อ ควรหาเวลาผ่อนคลายไม่ให้เครียดสะสม'},
+];
+const NUM_MEANING={1:'ผู้นำ — เริ่มต้นสิ่งใหม่ กล้าตัดสินใจ',2:'สมดุล — ความสัมพันธ์และความร่วมมือเด่น',
+  3:'สื่อสาร — เสน่ห์ดี เหมาะเจรจาพูดคุย',4:'มั่นคง — เหมาะกับงานที่ต้องวางรากฐาน',
+  5:'เปลี่ยนแปลง — โอกาสใหม่และการเดินทาง',6:'ดูแล — ครอบครัวและความรักเป็นพลังใจ',
+  7:'ปัญญา — เหมาะคิดวิเคราะห์และพักใจ',8:'การเงิน — โชคลาภและความสำเร็จ',9:'เมตตา — การให้และปิดจบเพื่อเริ่มใหม่'};
+function dayNumerology(iso){let s=iso.replace(/-/g,'').split('').reduce((a,c)=>a+ +c,0);while(s>9)s=String(s).split('').reduce((a,c)=>a+ +c,0);return s;}
+function moonPhase(sky){const e=sky.elong,il=sky.illum;
+  let label=il<0.04?'จันทร์ดับ/เดือนมืด 🌑':il>0.96?'จันทร์เต็มดวง 🌕':e<180?'ข้างขึ้น 🌔':'ข้างแรม 🌘';
+  const side=e<=180?'ขึ้น':'แรม',kham=Math.min(15,Math.max(1,Math.round((e<=180?e:e-180)/12)));
+  return{label,thai:`${side} ${kham} ค่ำ (โดยประมาณ)`,illum:Math.round(il*100)};}
+
+/* ---------- toned phrase banks ---------- */
+const BANK={
+  overview:{
+    good:["ดาวมงคลโคจรเข้าข้าง วันนี้ทำอะไรก็ราบรื่นเป็นพิเศษ","พลังดาวหนุนเต็มที่ เป็นจังหวะทองของการเริ่มต้น",
+      "จักรวาลเปิดทางให้ ความสุขและโชคลาภวิ่งเข้าหา","ดวงดาวเรียงตัวสวย ทุกอย่างลงล็อกพอดี",
+      "พลังบวกล้นเหลือ ความมั่นใจกลับมาเต็มร้อย","ดวงรุ่งโรจน์ มีเกณฑ์ได้ข่าวดีที่รอคอย"],
+    caution:["ดาวยังโคจรขัดกันเล็กน้อย ค่อย ๆ ทำอย่าใจร้อน","เป็นช่วงตั้งหลัก เก็บแรงไว้รอจังหวะที่ดีกว่า",
+      "มีอุปสรรคเล็ก ๆ เข้ามาทดสอบ ตั้งสติไว้แล้วจะผ่านไปได้","พลังดาวชวนให้ทบทวนมากกว่าลงมือ พักสักนิดไม่เสียหาย",
+      "ระวังเรื่องเล็กกลายเป็นเรื่องใหญ่ ใจเย็นเข้าไว้","จังหวะนี้เหมาะกับความระมัดระวังมากกว่าการเสี่ยง"],
+    mixed:["วันนี้ดวงกลาง ๆ มีทั้งจังหวะดีและเรื่องให้ระวังปนกัน","ดาวให้ทั้งโอกาสและบททดสอบ เลือกโฟกัสสิ่งที่ทำได้",
+      "ไม่หวือหวาแต่มั่นคง ทำหน้าที่ของตัวเองให้ดีที่สุด","ครึ่งวันแรกกับครึ่งวันหลังอาจต่างกัน ปรับตามสถานการณ์"]},
+  love:{
+    good:["ดาวศุกร์หนุนเรื่องหัวใจ คนโสดมีเกณฑ์เจอคนถูกใจ","ความรักอบอุ่นเป็นพิเศษ คนมีคู่เข้าใจกันมากขึ้น",
+      "เสน่ห์กำลังพุ่ง เป็นที่ต้องตาต้องใจคนรอบข้าง","เป็นวันดีของการบอกความในใจหรือกระชับความสัมพันธ์"],
+    caution:["เรื่องหัวใจต้องการความเข้าใจมากกว่าคำหวาน อย่าใจร้อน","ระวังคำพูดกระทบใจคนรัก สื่อสารให้ชัดเจน",
+      "อย่าเพิ่งตัดสินใจเรื่องความสัมพันธ์ในช่วงอารมณ์ขุ่นมัว","ให้พื้นที่กันและกันบ้าง ความสัมพันธ์จะดีขึ้นเอง"]},
+  money:{
+    good:["ดาวพฤหัสหนุนการเงิน มีเกณฑ์ได้ลาภหรือรายได้เพิ่ม","การเงินคล่องตัว เหมาะกับการลงทุนที่ศึกษามาดี",
+      "มีโชคด้านการเงินจากทางที่ไม่คาดคิด","เงินทองไหลเข้า เหมาะกับการเริ่มเก็บออมก้อนใหม่",
+      "รายได้เสริมมีเกณฑ์เข้ามาให้ชื่นใจ","ดวงการเงินสดใส งานที่ทำอยู่จะเริ่มเห็นผลตอบแทน",
+      "มีโอกาสได้รับเงินก้อนจากที่ไม่คาดคิด","การค้าการขายคล่องตัว ลูกค้าเพิ่มขึ้น",
+      "ดาวศุกร์เสริมโชค อาจมีของขวัญหรือรายได้พิเศษเข้ามา","หนี้สินที่ค้างอยู่มีทางคลี่คลายในทางที่ดี",
+      "เงินเก็บที่ลงทุนไว้เริ่มเห็นดอกผล","ผู้ใหญ่หรือคนรอบตัวอาจชวนทำมาหากินที่ได้ผลดี"],
+    caution:["ดาวเสาร์เตือนเรื่องรายจ่าย วางแผนให้รัดกุม","ระวังการลงทุนหรือให้ยืม อาจไม่เป็นไปตามหวัง",
+      "ช่วงนี้ควรรัดเข็มขัด เลี่ยงการใช้จ่ายตามอารมณ์","อย่าเพิ่งตัดสินใจเรื่องเงินก้อนใหญ่ รอจังหวะที่ชัดกว่านี้",
+      "มีรายจ่ายแฝงที่ต้องระวัง ตรวจสอบบิลและสัญญาให้ดี","ระวังถูกหลอกหรือชักจูงให้ลงทุนผิดที่",
+      "การเงินช่วงนี้ตึงมือ ควรหลีกเลี่ยงการกู้ยืมเพิ่ม","อย่าค้ำประกันหรือเซ็นสัญญาเรื่องเงินช่วงนี้",
+      "รายรับอาจไม่สม่ำเสมอ ควรมีเงินสำรองไว้ใช้","ระวังของหายหรือถูกโกงเล็กๆ น้อยๆ ที่กระทบกระเป๋าเงิน",
+      "หลีกเลี่ยงการเสี่ยงโชคหรือพนันในช่วงนี้","ค่าใช้จ่ายด้านสุขภาพหรือซ่อมแซมอาจเข้ามาแบบไม่ทันตั้งตัว"]},
+  work:{
+    good:["ดาวหนุนการงาน ผลงานเข้าตาผู้ใหญ่ มีลุ้นโอกาสใหม่","พลังงานเต็มเปี่ยม เหมาะกับการลุยงานที่ค้างคา",
+      "มีคนคอยสนับสนุน งานที่ติดขัดจะคลี่คลาย","ไอเดียพุ่ง เป็นวันดีของการเสนอความคิดใหม่"],
+    caution:["ระวังความขัดแย้งกับเพื่อนร่วมงาน ใจเย็นไว้ก่อน","งานอาจสะดุดบ้าง อย่าเพิ่งกดดันตัวเองเกินไป",
+      "ดาวเสาร์เตือนให้ละเอียดรอบคอบ ตรวจงานซ้ำก่อนส่ง","อย่ารับงานมากเกินตัว จัดลำดับความสำคัญให้ดี"]},
+  health:{
+    good:["สุขภาพแข็งแรงสดใส พลังกายพลังใจเต็มเปี่ยม","เป็นจังหวะดีของการเริ่มดูแลตัวเองอย่างจริงจัง",
+      "ร่างกายพร้อมลุย อย่าลืมเติมพลังด้วยการพักผ่อนดี ๆ"],
+    caution:["ดาวเตือนเรื่องความเหนื่อยล้า อย่าหักโหมจนเกินไป","ระวังความเครียดสะสมกระทบการนอน หาเวลาผ่อนคลาย",
+      "ใส่ใจเรื่องการกินสักนิด ร่างกายกำลังต้องการการดูแล"]},
+};
+const ADVICE_FLAVOR=["ทำบุญตักบาตรตอนเช้าช่วยเสริมสิริมงคล","ยิ้มให้คนรอบข้าง โชคดีจะวิ่งเข้าหาเอง",
+  "ช่วยเหลือผู้อื่นโดยไม่หวังผลตอบแทน บุญจะหนุนนำ","ตั้งสติก่อนตัดสินใจเรื่องสำคัญ","สวดมนต์ก่อนนอน จิตใจจะสงบและดวงจะดีขึ้น"];
+const ORACLE=[
+  {n:'ดาวนำโชค',e:'⭐',m:'โชคลาภกำลังเดินทางมาหา จงเปิดใจรับไว้',a:'มองหาโอกาสรอบตัว แล้วกล้าที่จะคว้า'},
+  {n:'พญานาคทรัพย์',e:'🐉',m:'ความมั่งคั่งกำลังไหลมาเทมา',a:'จัดการเงินอย่างมีสติ ความมั่งคั่งจะอยู่กับคุณนาน'},
+  {n:'ดอกบัวบาน',e:'🪷',m:'ความสำเร็จกำลังเบ่งบานจากความอดทน',a:'สิ่งที่รออยู่คุ้มค่ากับการรอคอย'},
+  {n:'เรือสำเภาทอง',e:'⛵',m:'การงานและการเงินกำลังแล่นฉิว',a:'เดินหน้าต่อไป อย่าหยุดกลางทาง'},
+  {n:'ช้างมงคล',e:'🐘',m:'พละกำลังและบารมีกำลังหนุนนำ',a:'ใช้ความมั่นคงของคุณช่วยเหลือคนรอบข้าง'},
+  {n:'พระจันทร์เต็มดวง',e:'🌕',m:'ความสมหวังกำลังเต็มเปี่ยม',a:'รับความสำเร็จด้วยความนอบน้อม'},
+  {n:'กุญแจทอง',e:'🔑',m:'ประตูแห่งโอกาสใหม่กำลังเปิดออก',a:'อย่ากลัวการเปลี่ยนแปลง'},
+  {n:'ต้นไม้แห่งชีวิต',e:'🌳',m:'การเติบโตอย่างมั่นคงกำลังรอคุณอยู่',a:'หมั่นรดน้ำสิ่งที่ลงมือทำ'},
+  {n:'นกฟีนิกซ์',e:'🔥',m:'ถึงเวลาเกิดใหม่ ปล่อยวางเรื่องเก่า',a:'ความล้มเหลวคือบทเรียน ไม่ใช่จุดจบ'},
+  {n:'เหรียญทองสามขา',e:'🪙',m:'โชคด้านการเงินกำลังมาแรง',a:'เป็นช่วงเหมาะกับการเริ่มเก็บออม'},
+  {n:'ดวงอาทิตย์',e:'☀️',m:'พลังบวกและความสดใสกำลังรออยู่',a:'ส่งต่อรอยยิ้มให้คนรอบข้าง'},
+  {n:'มือที่ยื่นช่วย',e:'🤝',m:'จะมีผู้ใหญ่ใจดีเข้ามาสนับสนุน',a:'อย่าลังเลที่จะขอความช่วยเหลือ'},
+  {n:'เข็มทิศทอง',e:'🧭',m:'ถึงเวลาตัดสินใจเลือกทางของตัวเอง',a:'เชื่อในสัญชาตญาณของคุณ'},
+  {n:'น้ำพุแห่งโชค',e:'⛲',m:'ความอุดมสมบูรณ์กำลังหลั่งไหล',a:'แบ่งปันสิ่งที่มี แล้วจะได้รับกลับมามากกว่าเดิม'},
+  {n:'ปีกแห่งอิสระ',e:'🕊️',m:'ปลดล็อกข้อจำกัด ก้าวไปข้างหน้าได้แล้ว',a:'อย่าให้ความกลัวมาฉุดรั้งความฝัน'},
+  {n:'ดาวหาง',e:'☄️',m:'โอกาสครั้งใหญ่ที่ผ่านมาเพียงครั้งเดียว',a:'เตรียมพร้อมไว้เสมอ'},
+];
+const TAROT_DECK=[{"id":"t001","n":"0 · The Fool","m":"จุดเริ่มต้นใหม่ที่เต็มไปด้วยความหวัง พลังงานบริสุทธิ์ไร้ขีดจำกัด กล้าก้าวออกจาก comfort zone","a":"ลองสิ่งใหม่ด้วยใจที่เปิดกว้าง โอกาสมาพร้อมความกล้า","rm":"ประมาทเกินไป ขาดการวางแผน เสี่ยงโดยไม่มีเหตุผล ควรชะลอการตัดสินใจ","img":""},{"id":"t002","n":"I · The Magician","m":"มีทักษะและทรัพยากรพร้อมแล้ว ถึงเวลาลงมือทำ พลังสร้างสรรค์กำลังสูง","a":"รวบรวมสิ่งที่มีแล้วลงมือ ความสำเร็จอยู่ในมือคุณ","rm":"พลังงานกระจัดกระจาย ไม่โฟกัส หรือใช้ความสามารถในทางที่ผิด","img":""},{"id":"t003","n":"II · The High Priestess","m":"สัญชาตญาณและปัญญาภายใน ให้ฟังเสียงข้างในมากกว่าคนภายนอก ความลึกลับกำลังเปิดเผย","a":"นั่งสมาธิ ฟังเสียงภายใน คำตอบอยู่ในตัวคุณเอง","rm":"เก็บกดความรู้สึก ไม่ยอมฟังสัญชาตญาณ หรือตัดสินใจด้วยอารมณ์มากเกินไป","img":""},{"id":"t004","n":"III · The Empress","m":"ความอุดมสมบูรณ์ ความรัก ความเป็นแม่ ธรรมชาติกำลังเบ่งบาน ผลลัพธ์กำลังจะมาถึง","a":"ดูแลสิ่งที่รักทั้งตัวเองและคนรอบข้าง สิ่งดีงามกำลังเติบโต","rm":"ความสัมพันธ์ขาดความสมดุล พึ่งพาผู้อื่นมากเกินไป หรือละเลยการดูแลตัวเอง","img":""},{"id":"t005","n":"IV · The Emperor","m":"อำนาจ ความมั่นคง โครงสร้างและกฎเกณฑ์ที่ชัดเจน ผู้นำที่เข้มแข็งและน่าเชื่อถือ","a":"วางโครงสร้างให้ชัดเจน ความมั่นคงมาจากวินัยและความสม่ำเสมอ","rm":"ใช้อำนาจมากเกินไป ขาดความยืดหยุ่น หรือถูกผู้มีอำนาจกดทับ","img":""},{"id":"t006","n":"V · The Hierophant","m":"ประเพณี คำสอน ความเชื่อดั้งเดิม ขอคำแนะนำจากผู้รู้หรือสิ่งที่พิสูจน์แล้วว่าได้ผล","a":"เรียนรู้จากประสบการณ์ของผู้อื่น ภูมิปัญญาเก่ายังมีคุณค่า","rm":"ขัดกับกฎเกณฑ์สังคม ต้องการทำสิ่งที่แตกต่าง หรือสงสัยในความเชื่อเดิม","img":""},{"id":"t007","n":"VI · The Lovers","m":"ความสัมพันธ์ การเลือก ความกลมเกลียว ถึงเวลาตัดสินใจเรื่องหัวใจหรือค่านิยม","a":"ตัดสินใจจากหัวใจที่แท้จริง ความรักต้องการความซื่อสัตย์","rm":"ความขัดแย้งในความสัมพันธ์ ตัดสินใจผิดพลาด หรือขาดความสมดุลในชีวิต","img":""},{"id":"t008","n":"VII · The Chariot","m":"ความมุ่งมั่น ชัยชนะจากการควบคุมตัวเอง พลังขับเคลื่อนที่แข็งแกร่ง เดินหน้าต่อไป","a":"รวมจิตใจให้เป็นหนึ่ง ความสำเร็จต้องการความมุ่งมั่นอย่างแน่วแน่","rm":"ขาดทิศทาง พลังงานขัดแย้งกัน หรือดื้อรั้นจนไม่ยอมเปลี่ยนแปลง","img":""},{"id":"t009","n":"VIII · Strength","m":"พลังภายในที่แท้จริง ความอดทน ควบคุมด้วยความนุ่มนวลมากกว่าความรุนแรง","a":"ความเข้มแข็งที่แท้จริงอยู่ที่การควบคุมอารมณ์และความเมตตา","rm":"ขาดความมั่นใจ ความกลัวครอบงำ หรือใช้กำลังโดยไม่จำเป็น","img":""},{"id":"t010","n":"IX · The Hermit","m":"การไตร่ตรองคนเดียว ค้นหาสัจธรรม ถอยออกมาจากสังคมเพื่อฟื้นฟูพลังงาน","a":"สร้างพื้นที่เงียบสงบให้ตัวเอง คำตอบจะมาเองเมื่อจิตสงบ","rm":"โดดเดี่ยวมากเกินไป หลีกเลี่ยงสังคม หรือสูญเสียทิศทางในการค้นหาตัวเอง","img":""},{"id":"t011","n":"X · Wheel of Fortune","m":"วงล้อแห่งโชคชะตากำลังหมุน การเปลี่ยนแปลงใหญ่กำลังจะมา โชคกำลังเอื้ออำนวย","a":"ยอมรับการเปลี่ยนแปลงด้วยใจที่ยืดหยุ่น วงล้อชีวิตหมุนเวียนเสมอ","rm":"โชคไม่เข้าข้าง ต้านทานการเปลี่ยนแปลง หรือถูกเหตุการณ์ภายนอกครอบงำ","img":""},{"id":"t012","n":"XI · Justice","m":"ความยุติธรรม ความสมดุล ผลลัพธ์จากการกระทำในอดีต สิ่งที่ถูกต้องจะปรากฏชัด","a":"ทำในสิ่งที่ถูกต้อง ผลกรรมจะตามมาอย่างยุติธรรม","rm":"ความอยุติธรรม ตัดสินไม่เป็นธรรม หรือหลีกเลี่ยงความรับผิดชอบ","img":""},{"id":"t013","n":"XII · The Hanged Man","m":"การหยุดรอ มองจากมุมใหม่ การเสียสละเพื่อความเข้าใจที่ลึกซึ้งกว่า","a":"หยุดนิ่ง มองปัญหาจากมุมที่ต่างออกไป คำตอบอาจอยู่ตรงข้ามกับที่คิด","rm":"ชะลอตัวโดยไม่จำเป็น ติดอยู่ในสถานการณ์ หรือไม่ยอมปล่อยวางสิ่งเดิม","img":""},{"id":"t014","n":"XIII · Death","m":"การเปลี่ยนแปลงครั้งใหญ่ การสิ้นสุดของสิ่งเก่าเพื่อเปิดทางให้สิ่งใหม่ การเริ่มต้นใหม่","a":"ปล่อยวางสิ่งที่ไม่ได้ผลอีกต่อไป การจบสิ้นคือจุดเริ่มต้นของสิ่งดีงาม","rm":"ต้านทานการเปลี่ยนแปลง ยึดติดกับอดีต หรือกลัวการสูญเสีย","img":""},{"id":"t015","n":"XIV · Temperance","m":"ความสมดุล ความอดทน การผสมผสานองค์ประกอบต่างๆ อย่างลงตัว วิถีทางสายกลาง","a":"ค่อยๆ ทำทีละขั้น ความสำเร็จที่ยั่งยืนมาจากความสมดุล","rm":"ขาดความสมดุล หุนหันพลันแล่น หรือมีความขัดแย้งภายในที่ยังแก้ไม่ได้","img":""},{"id":"t016","n":"XV · The Devil","m":"ติดกับดัก ความหลงใหล พฤติกรรมที่ทำลายตัวเอง แต่มีพลังงานที่รอการปลดปล่อย","a":"ตรวจสอบว่าอะไรที่กำลังพันธนาการคุณอยู่ แล้วตัดสินใจที่จะเป็นอิสระ","rm":"ตระหนักถึงพันธนาการ เริ่มหลุดพ้นจากนิสัยที่ไม่ดี หรือเผชิญหน้าความจริง","img":""},{"id":"t017","n":"XVI · The Tower","m":"การพังทลายของสิ่งที่สร้างบนรากฐานที่ผิด การเปลี่ยนแปลงฉับพลันที่ไม่คาดคิด","a":"ยอมรับการเปลี่ยนแปลงที่หลีกเลี่ยงไม่ได้ สิ่งที่พังคือสิ่งที่ควรพัง","rm":"หลีกเลี่ยงหายนะที่ใกล้จะมา หรือกำลังฟื้นตัวจากความวุ่นวาย","img":""},{"id":"t018","n":"XVII · The Star","m":"ความหวัง การฟื้นฟู แรงบันดาลใจ หลังพายุมีดาวส่องสว่าง อนาคตสดใส","a":"เชื่อในความเป็นไปได้ ดาวแห่งความหวังยังคงส่องสว่างอยู่เสมอ","rm":"ความหมดหวัง ไม่เชื่อในตัวเอง หรือรู้สึกว่าโชคชะตาไม่เข้าข้าง","img":""},{"id":"t019","n":"XVIII · The Moon","m":"ความลึกลับ ความไม่แน่นอน ความกลัวที่ซ่อนอยู่ สัญชาตญาณกำลังพูด ฟังให้ดี","a":"ไม่ทุกอย่างเป็นอย่างที่เห็น ใช้สัญชาตญาณนำทางในความมืด","rm":"ความกังวลและความกลัวเริ่มลดลง ความจริงเริ่มชัดเจนขึ้น","img":""},{"id":"t020","n":"XIX · The Sun","m":"ความสำเร็จ ความสุข ความชัดเจน พลังงานบวกสูงสุด ทุกอย่างกำลังงดงาม","a":"ฉลองชีวิตและความสำเร็จ ดวงอาทิตย์ส่องสว่างให้คุณในวันนี้","rm":"ความสุขชั่วคราว มองโลกในแง่ดีเกินไป หรือความสำเร็จที่ยังไม่สมบูรณ์","img":""},{"id":"t021","n":"XX · Judgement","m":"การตื่นรู้ การเรียกให้ลุกขึ้น การสะสางอดีตและก้าวสู่ชีวิตใหม่","a":"ฟังเสียงเรียกร้องจากภายใน ถึงเวลาลุกขึ้นและเดินหน้าสู่บทใหม่","rm":"ตัดสินตัวเองหรือผู้อื่นรุนแรงเกินไป หลีกเลี่ยงการตัดสินใจสำคัญ","img":""},{"id":"t022","n":"XXI · The World","m":"ความสำเร็จสมบูรณ์แบบ การบรรลุเป้าหมาย ความสมบูรณ์ พร้อมสำหรับวงจรใหม่","a":"เฉลิมฉลองสิ่งที่ทำสำเร็จ แล้วเตรียมพร้อมสำหรับการเดินทางครั้งต่อไป","rm":"ยังไม่จบสมบูรณ์ มีสิ่งที่ค้างคาอยู่ หรือกำลังใกล้ถึงจุดหมายแล้ว","img":""},{"id":"t023","n":"Ace of Wands","m":"จุดประกายใหม่ แรงบันดาลใจพุ่งสูง โอกาสสร้างสรรค์กำลังเปิดตัว","a":"คว้าโอกาสนี้ไว้ พลังสร้างสรรค์มาถึงแล้ว","rm":"ความคิดสร้างสรรค์ถูกขัดขวาง ขาดแรงจูงใจ หรือเริ่มต้นแล้วไม่ไปต่อ","img":""},{"id":"t024","n":"2 of Wands","m":"การวางแผนสู่อนาคต มองภาพรวมกว้าง เตรียมพร้อมออกเดินทางใหม่","a":"วางแผนใหญ่ แล้วกล้าก้าวออกไปสู่โลกที่กว้างกว่า","rm":"กลัวการเปลี่ยนแปลง ลังเลที่จะออกจาก comfort zone","img":""},{"id":"t025","n":"3 of Wands","m":"ผลจากการลงทุนเริ่มปรากฏ มองหาโอกาสในต่างแดน ขยายขอบเขต","a":"มองไปข้างหน้า โอกาสที่ใหญ่กว่ากำลังรอคุณอยู่","rm":"ความล่าช้า แผนที่ยังไม่เป็นผล หรือมองข้ามโอกาสที่อยู่ใกล้ๆ","img":""},{"id":"t026","n":"4 of Wands","m":"การเฉลิมฉลอง ความสุขในบ้านและครอบครัว ความสำเร็จขั้นแรกที่น่ายินดี","a":"ฉลองก้าวย่างนี้ร่วมกับคนที่รัก","rm":"ความสุขชั่วคราว ปัญหาภายในบ้าน หรือความสัมพันธ์ขาดความมั่นคง","img":""},{"id":"t027","n":"5 of Wands","m":"การแข่งขัน ความขัดแย้งเล็กน้อย ความท้าทายที่ช่วยเพิ่มพลัง","a":"มองความขัดแย้งเป็นแรงกระตุ้น ไม่ใช่อุปสรรค","rm":"หลีกเลี่ยงความขัดแย้ง หรือการแข่งขันที่ไม่จำเป็น","img":""},{"id":"t028","n":"6 of Wands","m":"ชัยชนะที่สาธารณะรับรู้ ความสำเร็จที่ได้รับการยอมรับ ความภาคภูมิใจ","a":"ก้าวออกมาและรับการยอมรับที่คุณสมควรได้รับ","rm":"ความสำเร็จส่วนตัวที่ยังไม่ได้รับการยอมรับ หรือความหยิ่งทะนง","img":""},{"id":"t029","n":"7 of Wands","m":"ยืนหยัดในจุดยืน ปกป้องสิ่งที่เชื่อ เผชิญกับการท้าทายด้วยความกล้า","a":"ยืนหยัดในสิ่งที่เชื่อ แม้จะถูกต่อต้าน","rm":"อ่อนแอในจุดยืน ยอมแพ้ง่าย หรือกลัวการเผชิญหน้า","img":""},{"id":"t030","n":"8 of Wands","m":"ความเร็วและความก้าวหน้า ข่าวดีกำลังจะมา สิ่งต่างๆ เริ่มขยับตัว","a":"เตรียมรับข่าวดี ทุกอย่างกำลังเร่งความเร็ว","rm":"ความล่าช้า การสื่อสารผิดพลาด หรือพลังงานที่กระจัดกระจาย","img":""},{"id":"t031","n":"9 of Wands","m":"ความอดทนในช่วงสุดท้าย บาดแผลที่ผ่านมาสอนให้แข็งแกร่ง ใกล้ถึงจุดหมายแล้ว","a":"อดทนอีกนิด คุณมาไกลเกินกว่าจะหยุดตอนนี้","rm":"หมดแรง ยอมแพ้ก่อนถึงเส้นชัย หรือระวังภัยมากเกินไป","img":""},{"id":"t032","n":"10 of Wands","m":"แบกภาระหนักเกินไป มีความรับผิดชอบมากมาย ถึงเวลาวางบางอย่างลง","a":"ตรวจสอบว่าอะไรสำคัญจริงๆ แล้ววางสิ่งที่ไม่จำเป็นลง","rm":"เรียนรู้ที่จะมอบหมายงาน หรือปล่อยวางภาระที่ไม่ใช่ของคุณ","img":""},{"id":"t033","n":"Page of Wands","m":"ความกระตือรือร้น ข่าวดีด้านการสร้างสรรค์ พลังงานของผู้เริ่มต้นที่ตื่นเต้น","a":"โอบรับความตื่นเต้นนี้ไว้ แต่จงมีแผนที่ชัดเจนด้วย","rm":"ใจร้อน ขาดทิศทาง หรือเริ่มโปรเจกต์แล้วทิ้งกลางคัน","img":""},{"id":"t034","n":"Knight of Wands","m":"พลังงานสูง กล้าหาญ เดินหน้าอย่างรวดเร็ว ผจญภัยและความเสี่ยง","a":"ใช้พลังงานที่มีอย่างชาญฉลาด ความกล้าต้องคู่กับปัญญา","rm":"หุนหันพลันแล่น ขาดความอดทน หรือพลังงานที่ควบคุมไม่ได้","img":""},{"id":"t035","n":"Queen of Wands","m":"ความมั่นใจ เสน่ห์ดึงดูด ความเป็นผู้นำที่อบอุ่น และพลังสร้างสรรค์ที่เต็มเปี่ยม","a":"เชื่อในพลังของตัวเอง และนำผู้อื่นด้วยความอบอุ่น","rm":"หึงหวง ควบคุมมากเกินไป หรือขาดความมั่นใจในตัวเอง","img":""},{"id":"t036","n":"King of Wands","m":"ผู้นำที่มีวิสัยทัศน์ กล้าตัดสินใจ แรงบันดาลใจที่แท้จริง ความสำเร็จระยะยาว","a":"นำด้วยวิสัยทัศน์และความเด็ดขาด แต่อย่าลืมฟังผู้อื่น","rm":"ใช้อำนาจเกินขอบเขต หุนหันพลันแล่น หรือขาดความเห็นอกเห็นใจ","img":""},{"id":"t037","n":"Ace of Cups","m":"ความรักใหม่ อารมณ์บริสุทธิ์ ความเมตตาและการเปิดใจ โอกาสทางอารมณ์","a":"เปิดใจรับความรักและความเมตตาทั้งจากภายในและภายนอก","rm":"อารมณ์ถูกกด ขาดความรัก หรือหัวใจที่ยังปิดอยู่","img":""},{"id":"t038","n":"2 of Cups","m":"ความสัมพันธ์ที่กลมเกลียว ความเป็นหุ้นส่วน การดึงดูดซึ่งกันและกัน","a":"ลงทุนในความสัมพันธ์ที่มีคุณค่า ความเชื่อใจสร้างจากการกระทำ","rm":"ความสัมพันธ์ขาดสมดุล ความเข้าใจผิด หรือการแยกทางกัน","img":""},{"id":"t039","n":"3 of Cups","m":"การเฉลิมฉลองกับเพื่อนๆ มิตรภาพที่แน่นแฟ้น ความสุขร่วมกัน","a":"ใช้เวลาร่วมกับคนที่รัก ความสุขมักมาจากการแบ่งปัน","rm":"ปาร์ตี้มากเกินไป นินทาในกลุ่ม หรือมิตรภาพที่ไม่จริงใจ","img":""},{"id":"t040","n":"4 of Cups","m":"เบื่อหน่าย ไม่พอใจในสิ่งที่มี ใคร่ครวญภายใน มองข้ามโอกาสที่อยู่ตรงหน้า","a":"ลืมตาดูสิ่งที่อยู่รอบข้าง โอกาสดีอาจถูกมองข้ามไป","rm":"ตื่นตัวขึ้นและมองเห็นโอกาสอีกครั้ง หรือพร้อมรับสิ่งใหม่","img":""},{"id":"t041","n":"5 of Cups","m":"ความเสียใจ สูญเสีย แต่ยังมีความหวังเหลืออยู่ถ้ามองให้ถูกทิศ","a":"อนุญาตให้ตัวเองเศร้า แล้วหันมองสิ่งที่ยังเหลืออยู่","rm":"เริ่มฟื้นตัวจากความสูญเสีย ยอมรับอดีตและก้าวต่อไป","img":""},{"id":"t042","n":"6 of Cups","m":"ความทรงจำดีๆ ในอดีต ความบริสุทธิ์ใจ คนจากอดีตอาจกลับมา","a":"เรียนรู้จากอดีตอย่างสวยงาม แต่อย่าลืมใช้ชีวิตในปัจจุบัน","rm":"ติดอยู่ในอดีต ปฏิเสธที่จะเติบโต หรือหวนหาสิ่งที่ผ่านไปแล้ว","img":""},{"id":"t043","n":"7 of Cups","m":"ภาพมายา ทางเลือกมากมาย ฝันกลางวัน ต้องโฟกัสให้ชัดว่าต้องการอะไรจริงๆ","a":"ฝันได้ แต่ต้องเลือกสักทางและลงมือทำ","rm":"เริ่มชัดเจนขึ้น ตัดภาพมายาออก และโฟกัสกับความเป็นจริง","img":""},{"id":"t044","n":"8 of Cups","m":"ละทิ้งสิ่งที่ไม่ตอบสนองอีกต่อไป ออกเดินทางหาสิ่งที่มีความหมายลึกกว่า","a":"กล้าเดินออกจากสิ่งที่ไม่เติมเต็มคุณอีกต่อไปแล้ว","rm":"กลับมาจากการเดินทางภายใน หรือยังลังเลที่จะละทิ้งสิ่งเก่า","img":""},{"id":"t045","n":"9 of Cups","m":"ความปรารถนาสมหวัง ความพึงพอใจ ความสุขทางวัตถุและจิตใจ","a":"ขอบคุณสิ่งที่มีอยู่ ความพอใจคือทรัพย์ที่มีค่าที่สุด","rm":"ความสุขภายนอกที่ไม่เติมเต็มข้างใน หรือความอิ่มเอมที่ยังมาไม่ถึง","img":""},{"id":"t046","n":"10 of Cups","m":"ความสุขสมบูรณ์แบบในครอบครัว ความรักที่แท้จริง ชีวิตที่เติมเต็ม","a":"ความสุขที่แท้จริงอยู่กับคนที่รัก ฉลองสิ่งดีที่มีอยู่","rm":"ความสุขในครอบครัวที่ยังไม่สมบูรณ์ หรือความขัดแย้งภายใน","img":""},{"id":"t047","n":"Page of Cups","m":"ข้อความทางอารมณ์ ความคิดสร้างสรรค์ สัญชาตญาณที่ตื่นตัว","a":"เปิดรับแรงบันดาลใจจากสัญชาตญาณ มันกำลังพูดกับคุณ","rm":"อารมณ์ที่อ่อนไหวเกินไป หรือข้อความที่ยังไม่ชัดเจน","img":""},{"id":"t048","n":"Knight of Cups","m":"ความโรแมนติก ข่าวดีด้านความรัก ผู้ส่งสารแห่งอารมณ์ความรู้สึก","a":"ติดตามหัวใจ แต่ตรวจสอบความเป็นจริงด้วย","rm":"อารมณ์ที่ไม่แน่นอน หรือความโรแมนติกที่ไม่สมจริง","img":""},{"id":"t049","n":"Queen of Cups","m":"ความเมตตา สัญชาตญาณลึก ความเข้าอกเข้าใจ และความรักที่ไม่มีเงื่อนไข","a":"ดูแลผู้อื่นด้วยความเมตตา แต่อย่าลืมดูแลตัวเองด้วย","rm":"อารมณ์ที่ท่วมท้น ขาดขอบเขต หรือพึ่งพาผู้อื่นมากเกินไป","img":""},{"id":"t050","n":"King of Cups","m":"ความสมดุลระหว่างอารมณ์และเหตุผล ผู้นำที่เมตตาและมีสติ","a":"นำด้วยทั้งหัวใจและสติปัญญา ความสมดุลคือพลัง","rm":"ความรู้สึกที่กดเก็บ หรือใช้อารมณ์ในการควบคุมผู้อื่น","img":""},{"id":"t051","n":"Ace of Swords","m":"ความชัดเจน ความจริง ความคิดใหม่ที่คมชัด ชัยชนะแห่งเหตุผล","a":"ตัดผ่านความสับสนด้วยความจริงและเหตุผล","rm":"ความคิดสับสน การสื่อสารผิดพลาด หรือความจริงที่ยังไม่ถูกพูดถึง","img":""},{"id":"t052","n":"2 of Swords","m":"การอยู่กับความไม่แน่นอน ไม่ยอมตัดสินใจ หรือหลีกเลี่ยงความขัดแย้ง","a":"ถึงเวลาเปิดตาและตัดสินใจ ความลังเลไม่ช่วยอะไร","rm":"พร้อมตัดสินใจ ยอมรับความจริงที่หลีกเลี่ยงมา","img":""},{"id":"t053","n":"3 of Swords","m":"ความเจ็บปวด ความโศกเศร้า การสูญเสียที่ต้องผ่านให้พ้น","a":"อนุญาตให้เศร้า แล้วรักษาใจด้วยเวลาและความเมตตาต่อตัวเอง","rm":"เริ่มฟื้นตัว ปล่อยให้ความเจ็บปวดผ่านไป","img":""},{"id":"t054","n":"4 of Swords","m":"การพัก ฟื้นฟู และทบทวนสิ่งต่างๆ ถอยออกมาก่อนเพื่อฟื้นพลัง","a":"พักผ่อนเป็นส่วนหนึ่งของกลยุทธ์ ไม่ใช่การหลบหนี","rm":"กลับมาลงมือทำ พักผ่อนเพียงพอแล้ว","img":""},{"id":"t055","n":"5 of Swords","m":"ความขัดแย้ง การชนะที่ไม่คุ้มค่า หรือการสูญเสียที่มีศักดิ์ศรี","a":"ตรวจสอบว่าชัยชนะที่ต้องการนั้นคุ้มค่ากับราคาที่ต้องจ่ายหรือไม่","rm":"คืนดี ปล่อยวางการโต้เถียง หรือยอมรับความพ่ายแพ้อย่างมีเกียรติ","img":""},{"id":"t056","n":"6 of Swords","m":"การเดินทางออกจากความยุ่งยาก น้ำที่สงบกว่ารออยู่ข้างหน้า","a":"ก้าวออกจากพายุ น้ำที่สงบสว่างกว่ารออยู่ข้างหน้า","rm":"ยังติดอยู่ในปัญหา หรือต้านทานการเปลี่ยนแปลงที่จำเป็น","img":""},{"id":"t057","n":"7 of Swords","m":"กลยุทธ์ที่แยบยล การทำคนเดียวในแบบที่ไม่คาดคิด แต่ต้องระวังความไม่ซื่อสัตย์","a":"กลยุทธ์ฉลาดได้ แต่อย่าให้ข้ามเส้นความซื่อสัตย์","rm":"ถูกเปิดเผย ยอมรับความผิดพลาด หรือเลิกวิธีที่ไม่สุจริต","img":""},{"id":"t058","n":"8 of Swords","m":"ติดกับดักในความคิด รู้สึกว่าทำอะไรไม่ได้ แต่จริงๆ มีทางออกอยู่","a":"พันธนาการส่วนใหญ่อยู่ในใจ ลองมองจากมุมอื่น","rm":"เริ่มมองเห็นทางออก ปลดปล่อยตัวเองจากความคิดที่จำกัด","img":""},{"id":"t059","n":"9 of Swords","m":"ความวิตกกังวล ฝันร้าย ความกลัวในยามค่ำคืน ความคิดที่ทรมาน","a":"ความคิดในยามค่ำคืนมักเลวร้ายกว่าความจริง พูดคุยกับใครสักคน","rm":"ความกังวลเริ่มลดลง ค้นพบว่าสิ่งที่กลัวไม่ได้ร้ายแรงอย่างที่คิด","img":""},{"id":"t060","n":"10 of Swords","m":"จุดต่ำสุด การสิ้นสุดที่เจ็บปวด แต่หลังจากนี้มีแต่ทิศทางขึ้นเท่านั้น","a":"นี่คือจุดต่ำสุด และมันต้องสิ้นสุด รุ่งอรุณกำลังจะมา","rm":"ฟื้นตัวจากจุดต่ำสุด ก้าวผ่านความเจ็บปวดมาได้","img":""},{"id":"t061","n":"Page of Swords","m":"ความอยากรู้อยากเห็น ความคิดที่ว่องไว ข่าวสารที่ต้องตรวจสอบ","a":"ตั้งคำถามและหาข้อมูล แต่คิดก่อนพูดเสมอ","rm":"ใจร้อน วิจารณ์มากเกินไป หรือรับข้อมูลโดยไม่กรองก่อน","img":""},{"id":"t062","n":"Knight of Swords","m":"เร็ว เด็ดขาด กล้าพูดความจริง แต่อาจหุนหันพลันแล่น","a":"ใช้ความคมของความคิดอย่างชาญฉลาด ไม่ใช่เพื่อทำร้ายผู้อื่น","rm":"หยุดคิดก่อนลงมือ ความเร็วโดยไม่มีทิศทางนำไปสู่ความผิดพลาด","img":""},{"id":"t063","n":"Queen of Swords","m":"ความชาญฉลาด ความเป็นอิสระ พูดตรงไปตรงมา มีขอบเขตที่ชัดเจน","a":"ใช้สติปัญญาและความตรงไปตรงมาเพื่อสร้าง ไม่ใช่ทำลาย","rm":"เย็นชา ขมขื่น หรือใช้ความฉลาดเพื่อทำร้ายผู้อื่น","img":""},{"id":"t064","n":"King of Swords","m":"อำนาจแห่งปัญญา ความยุติธรรม การตัดสินใจอย่างมีเหตุผลและเป็นกลาง","a":"ตัดสินใจด้วยเหตุผลที่ชัดเจนและเป็นธรรมสำหรับทุกคน","rm":"ใช้ความฉลาดเพื่อควบคุม เย็นชาจนไม่รับฟังความรู้สึก","img":""},{"id":"t065","n":"Ace of Pentacles","m":"โอกาสใหม่ด้านการเงิน รากฐานที่มั่นคง ความมั่งคั่งที่กำลังเริ่มต้น","a":"ลงทุนในสิ่งที่มีคุณค่าระยะยาว รากฐานที่ดีคือกุญแจสู่ความมั่งคั่ง","rm":"โอกาสที่พลาดไป ความไม่มั่นคงทางการเงิน หรือเริ่มต้นบนรากฐานที่ผิด","img":""},{"id":"t066","n":"2 of Pentacles","m":"การจัดการหลายอย่างพร้อมกัน ความยืดหยุ่น ความสมดุลในชีวิตประจำวัน","a":"จัดลำดับความสำคัญให้ดี ไม่ทุกอย่างต้องทำพร้อมกัน","rm":"รับมากเกินไปจนทำพลาด ขาดการจัดลำดับความสำคัญ","img":""},{"id":"t067","n":"3 of Pentacles","m":"ทักษะฝีมือ ทีมงานที่แข็งแกร่ง ผลงานที่ได้รับการยอมรับ","a":"ร่วมมือกับผู้อื่น ความเชี่ยวชาญที่แตกต่างสร้างสิ่งที่ยิ่งใหญ่กว่า","rm":"ขาดทีมเวิร์ก ทำงานคนเดียวโดยไม่จำเป็น หรืองานที่ไม่ได้มาตรฐาน","img":""},{"id":"t068","n":"4 of Pentacles","m":"การรักษาความมั่งคั่ง ความมั่นคง แต่ต้องระวังความตระหนี่หรือการยึดติด","a":"ออมอย่างฉลาด แต่อย่าให้ความกลัวทำให้กลายเป็นคนตระหนี่","rm":"เริ่มเปิดใจ ปล่อยวาง หรือใช้จ่ายสิ่งที่กักตุนไว้","img":""},{"id":"t069","n":"5 of Pentacles","m":"ความยากลำบาก ขาดแคลน ความรู้สึกถูกทอดทิ้ง แต่ความช่วยเหลืออยู่ใกล้ๆ","a":"ขอความช่วยเหลือได้ ไม่มีใครต้องผ่านช่วงยากลำบากคนเดียว","rm":"เริ่มฟื้นตัวจากช่วงยากลำบาก กำลังพบทางออก","img":""},{"id":"t070","n":"6 of Pentacles","m":"การให้และรับ ความเอื้อเฟื้อ ความสมดุลในการแบ่งปัน","a":"แบ่งปันด้วยใจที่เปิดกว้าง สิ่งที่ให้ออกไปจะกลับมา","rm":"การให้ที่มีเงื่อนไข หรือรับโดยไม่ตอบแทน","img":""},{"id":"t071","n":"7 of Pentacles","m":"รอผลจากการลงทุน ประเมินความก้าวหน้า ถึงเวลาตรวจสอบทิศทาง","a":"ความอดทนคือคุณสมบัติของนักลงทุนที่ดี แต่ก็ต้องรู้จักประเมินผลด้วย","rm":"ผลตอบแทนที่ไม่คุ้มค่า ต้องพิจารณาเปลี่ยนกลยุทธ์","img":""},{"id":"t072","n":"8 of Pentacles","m":"ฝึกฝนทักษะ ทุ่มเทกับงาน พัฒนาตัวเองอย่างสม่ำเสมอ","a":"ฝึกฝนทุกวัน ความเชี่ยวชาญสร้างจาก 1% ที่ดีขึ้นทุกวัน","rm":"งานซ้ำซากจำเจ ขาดแรงจูงใจ หรือพัฒนาทักษะผิดทาง","img":""},{"id":"t073","n":"9 of Pentacles","m":"ความสำเร็จส่วนตัว ความพึงพอใจในชีวิต ความมั่งคั่งที่สร้างจากความพยายาม","a":"สิ่งที่สร้างด้วยมือตัวเองมีคุณค่าที่ไม่มีอะไรมาแทนได้","rm":"ความสำเร็จที่ขึ้นอยู่กับผู้อื่น หรือใช้จ่ายเกินรายได้","img":""},{"id":"t074","n":"10 of Pentacles","m":"มรดก ความมั่งคั่งข้ามรุ่น ครอบครัวที่มั่นคง ความสำเร็จในระยะยาว","a":"สิ่งที่สร้างวันนี้จะเป็นมรดกของคนรุ่นต่อไป","rm":"ปัญหาในครอบครัวด้านการเงิน มรดกที่ก่อให้เกิดความขัดแย้ง","img":""},{"id":"t075","n":"Page of Pentacles","m":"ผู้เริ่มต้นที่มุ่งมั่น ข่าวดีด้านการเงิน โอกาสในการเรียนรู้ทักษะใหม่","a":"เรียนรู้อย่างจริงจัง ทักษะที่ลงทุนวันนี้ผลตอบแทนในอนาคต","rm":"ขาดแรงบันดาลใจ โอกาสที่พลาดไป หรือขาดความรับผิดชอบ","img":""},{"id":"t076","n":"Knight of Pentacles","m":"ทำงานหนักอย่างสม่ำเสมอ น่าเชื่อถือ อดทน แม้จะช้าแต่มั่นคง","a":"ความสม่ำเสมอชนะความเร็วเสมอ ทำทีละขั้นอย่างมั่นคง","rm":"ขาดแรงจูงใจ ทำงานซ้ำซากจนไม่พัฒนา หรือมองไม่เห็นภาพรวม","img":""},{"id":"t077","n":"Queen of Pentacles","m":"ความอุดมสมบูรณ์ ดูแลทั้งบ้านและการเงินได้ดี ความอบอุ่นและความมั่นคง","a":"ดูแลตัวเองและคนที่รักด้วยทั้งความรักและความสามารถในทางปฏิบัติ","rm":"สับสนระหว่างงานและชีวิตส่วนตัว หรือพึ่งพาความมั่งคั่งของผู้อื่น","img":""},{"id":"t078","n":"King of Pentacles","m":"ความมั่งคั่งที่สร้างจากความพยายาม ความน่าเชื่อถือ และความสำเร็จทางธุรกิจ","a":"ใช้ความมั่งคั่งอย่างมีจุดหมาย และแบ่งปันความสำเร็จกับผู้อื่น","rm":"ให้ความสำคัญกับวัตถุมากเกินไป ตระหนี่ หรือใช้เงินเป็นอำนาจ","img":""}];
+const HASH_BASE=['ดูดวง','ดวงวันนี้','ปลดหนี้มีโชค','ดวงรายวัน','โชคลาภ','เลขเด็ด','ของมงคล','โหราศาสตร์'];
+
+/* ---------- RNG (สำหรับวนถ้อยคำในโทนที่คำนวณได้) ---------- */
+function hashStr(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function rngPick(seed,arr){return arr[Math.floor(mulberry32(hashStr(seed))()*arr.length)];}
+function seededShuffle(seed,arr){const rnd=mulberry32(hashStr(seed)),a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ---------- State ---------- */
+let S={mod:'zodiac',date:todayISO(),period:'week',bday:1,last:[],sky:null,skyDate:null};
+function todayISO(){const d=new Date(),o=d.getTimezoneOffset();return new Date(d-o*60000).toISOString().slice(0,10);}
+function loadState(){try{const s=JSON.parse(localStorage.getItem('duang_state'));if(s){S.mod=s.mod||'zodiac';S.period='week';S.bday=s.bday??1;}}catch(e){}}
+function saveState(){localStorage.setItem('duang_state',JSON.stringify({mod:S.mod,period:S.period,bday:S.bday}));}
+
+/* ---------- date helpers ---------- */
+function thDate(iso){const m=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];const d=new Date(iso+'T00:00:00');return d.getDate()+' '+m[d.getMonth()]+' '+(d.getFullYear()+543);}
+function isoThursday(iso){const d=new Date(iso+'T00:00:00');const dayNr=(d.getDay()+6)%7;d.setDate(d.getDate()-dayNr+3);return d.toISOString().slice(0,10);}
+function isoWeekKey(iso){const d=new Date(iso+'T00:00:00'),t=new Date(d),dayNr=(d.getDay()+6)%7;t.setDate(t.getDate()-dayNr+3);
+  const f=new Date(t.getFullYear(),0,4);f.setDate(f.getDate()-((f.getDay()+6)%7)+3);
+  return t.getFullYear()+'-W'+String(1+Math.round((t-f)/(7*864e5))).padStart(2,'0');}
+/* นักษัตรจีน: ใช้ภาพรวมรายเดือน — สุ่มดาวที่กลางเดือน (วันที่ 15) แทนวันที่เลือกจริง
+   เพื่อให้ดวงคงที่ตลอดทั้งเดือน ไม่ขยับไปมาตามวันที่เปลี่ยน */
+function isoMonthMid(iso){const d=new Date(iso+'T00:00:00');return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-15';}
+function isoMonthKey(iso){const d=new Date(iso+'T00:00:00');return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function thMonthYear(iso){const mf=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const d=new Date(iso+'T00:00:00');return mf[d.getMonth()]+' '+(d.getFullYear()+543);}
+/* lucky/oracle ไม่มีตัวเลือกรายวัน/รายสัปดาห์ให้ผู้ใช้เห็น แต่ S.period อาจค้างเป็น 'week'
+   จากแท็บอื่นที่เคยเลือกไว้ — ถ้าปล่อยไว้ วันที่จะถูกเลื่อนไปวันพฤหัสฯ ของสัปดาห์เสมอ
+   ทำให้สีมงคล/เลขศาสตร์ที่ขึ้นกับวันในสัปดาห์ค้างค่าเดิมไม่ขยับตามวันที่เลือก */
+function skyDateFor(){
+  if(S.mod==='chinese')return isoMonthMid(S.date);
+  return(S.period==='week'&&S.mod==='zodiac')?isoThursday(S.date):S.date;
+}
+/* สำนวนสุ่มอัตโนมัติ 7 ชุดตามวันในสัปดาห์ของวันที่เลือก (ไม่ต้องเลือกเอง ระบบสุ่มให้) */
+function wordSeed(item){
+  const dk=S.mod==='chinese'?isoMonthKey(S.date):(S.period==='week'?isoWeekKey(S.date):S.date);
+  const v=new Date(S.date+'T00:00:00').getDay();
+  return dk+'|'+S.period+'|v'+v+'|'+item;
+}
+function starStr(n){let s='';for(let i=0;i<5;i++)s+=i<n?'★':'<span class="off">★</span>';return s;}
+
+/* ---------- scoring: ราศี ตามมุมดาวจริง ---------- */
+function scoreZodiac(idx,sky){
+  let s=3;const inf=[];
+  const a=body=>aspect(idx,signIdx(sky.P[body].lon));
+  const mt=a('moon'),st=a('sun'),vt=a('venus'),jt=a('jupiter'),mart=a('mars'),satt=a('saturn');
+  const moonGood=harmon(mt)&&mt!=='conj',moonHard=hard(mt);
+  if(harmon(mt)&&mt!=='conj')s+=1; else if(mt==='conj')s+=0.5; else if(hard(mt))s-=1;
+  const sunHarm=harmon(st);
+  if(st==='conj'){s+=1;inf.push(['☀️ ช่วงราศีของคุณ ดวงเด่น',0]);}
+  else if(harmon(st))s+=0.5; else if(hard(st))s-=0.5;
+  const venusGood=harmon(vt);
+  if(venusGood){s+=0.5;inf.push(['♀ ศุกร์หนุนความรัก–การเงิน',0]);} else if(hard(vt))s-=0.25;
+  const jupGood=harmon(jt);
+  if(jupGood){s+=0.75;inf.push(['♃ พฤหัสเปิดโชคลาภ',0]);} else if(hard(jt))s-=0.25;
+  const marsTrine=mt!=='conj'&&(mart==='trine'||mart==='sextile'),marsHard=hard(mart)||mart==='conj';
+  if(marsHard){s-=0.5;inf.push(['♂ อังคารเร่งพลัง ระวังหุนหัน',1]);} else if(marsTrine)s+=0.25;
+  const satHard=hard(satt)||satt==='conj';
+  if(satHard){s-=0.5;inf.push(['♄ เสาร์เตือนให้รอบคอบ',1]);} else if(satt==='trine')s+=0.25;
+  if(sky.retro.mercury){s-=0.25;const mc=a('mercury');if(hard(mc)||mc==='conj')s-=0.25;}
+  if(sky.illum>0.9)s+=0.25; else if(sky.illum<0.1)s+=0.15;
+  const moonSign=SIGN_SHORT[signIdx(sky.P.moon.lon)];
+  inf.unshift(['🌙 จันทร์ราศี'+moonSign+(moonGood?' เข้ากับคุณ':moonHard?' กระทบเล็กน้อย':' เป็นกลาง'),moonHard?1:0]);
+  const star=Math.max(1,Math.min(5,Math.round(s)));
+  const tones={
+    overview: star>=4?'good':star<=2?'caution':'mixed',
+    love:(venusGood||moonGood)&&!marsHard?'good':'caution',
+    money:(jupGood||venusGood)&&!satHard?'good':'caution',
+    work:(jupGood||sunHarm||marsTrine)&&!satHard?'good':'caution',
+    health:(marsHard||satHard||moonHard)?'caution':'good',
+  };
+  return{star,tones,inf:inf.slice(0,3)};
+}
+/* ---------- scoring: นักษัตรจีน ตามพลังประจำวัน ---------- */
+function scoreChinese(idx,sky){
+  let s=3;const inf=[];
+  if(sky.illum>0.9){s+=0.4;} else if(sky.illum<0.1){s+=0.3;}
+  if(sky.retro.mercury)s-=0.3;
+  const off=rngPick(wordSeed('cn'+idx),[-0.6,-0.3,0,0.3,0.6,0.9,1.0]);s+=off;
+  const moonSign=SIGN_SHORT[signIdx(sky.P.moon.lon)];
+  inf.push(['🌙 จันทร์ราศี'+moonSign,0]);
+  if(sky.retro.mercury)inf.push(['☿ พุธย้อนหลัง ระวังสื่อสาร',1]);
+  const star=Math.max(1,Math.min(5,Math.round(s)));
+  const good=star>=4,cau=star<=2;
+  const tones={overview:good?'good':cau?'caution':'mixed',
+    love:rngPick(wordSeed('cl'+idx),good?['good','good','caution']:['caution','good']),
+    money:rngPick(wordSeed('cm'+idx),good?['good','good','caution']:['caution','good']),
+    work:sky.retro.mercury?'caution':rngPick(wordSeed('cw'+idx),['good','caution']),
+    health:cau?'caution':rngPick(wordSeed('ch'+idx),['good','good','caution'])};
+  return{star,tones,inf:inf.slice(0,3)};
+}
+
+/* ---------- assemble one fortune ---------- */
+function pick(area,tone,key){return rngPick(wordSeed(area+'|'+tone+'|'+key),BANK[area][tone]||BANK[area].good);}
+function luckyNums(idx,sky){const nd=dayNumerology(skyDateFor());
+  return[String((Math.floor(sky.P.moon.lon)+idx*7)%100).padStart(2,'0'),
+         String((Math.floor(sky.P.sun.lon)+idx*13)%100).padStart(2,'0'),
+         String(((nd+idx)%9)+1)];}
+function buildFortune(meta,idx,sky,sc){
+  const day=THAI_DAY[sky.wd];const nd=dayNumerology(skyDateFor());
+  return{
+    star:sc.star,inf:sc.inf,
+    overview:pick('overview',sc.tones.overview,meta.k),
+    love:pick('love',sc.tones.love,meta.k),
+    money:pick('money',sc.tones.money,meta.k),
+    work:pick('work',sc.tones.work,meta.k),
+    health:pick('health',sc.tones.health,meta.k),
+    advice:`สวมใส่โทนสี${day.mong[0]}เสริมดวง เลี่ยงสี${day.kala[0]} · `+rngPick(wordSeed('adv'+meta.k),ADVICE_FLAVOR),
+    nums:luckyNums(idx,sky),color:day.mong,kala:day.kala,numDay:nd,
+  };
+}
+
+/* ---------- caption ---------- */
+function periodLabel(){if(S.mod==='chinese')return'ประจำเดือน';return S.period==='week'?'ประจำสัปดาห์':'ประจำวันที่';}
+function captionFortune(name,f,sky){
+  const mer=sky.retro.mercury?'\n⚠️ ช่วงดาวพุธย้อนหลัง — ระวังการสื่อสาร เซ็นสัญญา และอุปกรณ์':'';
+  const moonSign=SIGN_SHORT[signIdx(sky.P.moon.lon)],sunSign=SIGN_SHORT[signIdx(sky.P.sun.lon)];
+  const dateLabel=S.mod==='chinese'?thMonthYear(S.date):thDate(S.date);
+  return `🔮 ดวง${name} ${periodLabel()} ${dateLabel}\n`+
+    `${'⭐'.repeat(f.star)} (${f.star}/5)\n`+
+    `🌙 จันทร์ราศี${moonSign} · ☀️ อาทิตย์ราศี${sunSign}${mer}\n\n`+
+    `${f.overview}\n\n`+
+    `💖 ความรัก: ${f.love}\n💰 การเงิน: ${f.money}\n💼 การงาน: ${f.work}\n🍀 สุขภาพ: ${f.health}\n✨ เคล็ด: ${f.advice}\n\n`+
+    `🔢 เลขนำโชค: ${f.nums.join(' · ')} | เลขศาสตร์วันนี้ ${f.numDay}\n🎨 สีมงคล: ${f.color[0]} | 🚫 กาลกิณี: ${f.kala[0]}`;
+}
+function hashtagsFor(name){const t=['ปลดหนี้มีโชค','ดูดวง','ดวงวันนี้',name.replace(/\s/g,''),...['ดูดวง','ดวงรายวัน','โชคลาภ','โหราศาสตร์']];return[...new Set(t)].map(x=>'#'+x).join(' ');}
+function imgPrompt(sym,name){return `A mystical Thai fortune-telling illustration for ${name}, featuring a ${sym}, deep indigo night sky with golden stars and planets, lotus flowers and auspicious Thai patterns, gold foil accents, glowing celestial atmosphere, elegant lucky mood, vertical poster, ultra detailed, soft warm lighting`;}
+
+/* ---------- render ---------- */
+const elResults=document.getElementById('results'),elToolbar=document.getElementById('toolbar'),
+      elCount=document.getElementById('count'),elActions=document.getElementById('actions');
+
+function renderActions(){
+  const map={
+    zodiac:[['🌟 สร้างครบ 12 ราศีรวดเดียว','batch']],
+    chinese:[['🐉 สร้างดวงนักษัตรประจำเดือน (ครบ 12 นักษัตร)','batch']],
+    oracle:[['🃏 สุ่มไพ่','draw']],
+    lucky:[['🔢 สร้าง Infographic เลข·สีมงคล','lucky']],
+    money:[['💰 สร้าง Infographic การเงิน','money']],
+    birthday:[['🎂 ดูดวงประจำวันเกิด','birthday']],
+  };
+  elActions.innerHTML='';
+  // oracle: เพิ่ม select วิธีวาง
+  if(S.mod==='oracle'){
+    const sel=document.createElement('select');sel.id='spreadSel';sel.className='';
+    sel.style.cssText='font-family:Sarabun;font-size:14px;background:var(--ink);color:var(--cream);border:1px solid var(--line);border-radius:12px;padding:10px 13px;cursor:pointer';
+    [['single','1 ใบ (ถามตอบ)'],['three','3 ใบ (อดีต-ปัจจุบัน-อนาคต)'],['cross','ไม้กางเขน 7 ใบ'],['celtic','Celtic Cross 10 ใบ'],['pyramid','ปิรามิด 4 ใบ'],['age','เรียง 10 ใบ (อายุขัย)']].forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;sel.appendChild(o);});
+    sel.value=S.spread||'three';sel.onchange=()=>{S.spread=sel.value;};
+    elActions.appendChild(sel);
+    const b=document.createElement('button');b.className='btn btn-gold';b.textContent='🃏 จั่วไพ่';b.onclick=()=>run(sel.value);elActions.appendChild(b);
+    const upLabel=document.createElement('label');upLabel.className='btn btn-ghost';upLabel.style.cursor='pointer';
+    upLabel.innerHTML='🖼️ แนบรูปไพ่ (เลือกได้หลายไฟล์)<input type="file" id="tarotImgUpload" accept="image/*" multiple hidden>';
+    elActions.appendChild(upLabel);
+    const clearBtn=document.createElement('button');clearBtn.className='btn btn-ghost';clearBtn.textContent='🗑️ ลบรูปไพ่ทั้งหมด';
+    clearBtn.onclick=clearTarotImages;elActions.appendChild(clearBtn);
+    document.getElementById('tarotImgUpload').onchange=e=>{bulkUploadTarotImages(e.target.files);e.target.value='';};
+  } else {
+    map[S.mod].forEach((a,i)=>{const b=document.createElement('button');b.className='btn '+(i===0?'btn-gold':'btn-ghost');b.textContent=a[0];b.onclick=()=>run(a[1]);elActions.appendChild(b);});
+  }
+  document.getElementById('bdayWrap').style.display=(S.mod==='birthday')?'':'none';
+}
+
+function astroPanel(sky){
+  const order=['sun','moon','mercury','venus','mars','jupiter','saturn'];
+  const pls=order.map(k=>{const sg=SIGN_SHORT[signIdx(sky.P[k].lon)],rx=sky.retro[k]?'<span class="rx"> ℞</span>':'';
+    return `<div class="pl"><div class="nm">${PLANET_TH[k][1]} ${PLANET_TH[k][0]}</div><div class="sg">${sg}${rx}</div></div>`;}).join('');
+  const ph=moonPhase(sky),day=THAI_DAY[sky.wd],nd=dayNumerology(skyDateFor());
+  const note=S.mod==='chinese'?'ตำแหน่งดาวกลางเดือน (ใช้เป็นภาพรวมรายเดือน)':S.period==='week'?'ตำแหน่งดาวกลางสัปดาห์ (พระจันทร์เคลื่อนเร็ว ใช้เป็นภาพรวม)':'คำนวณจากสูตรดาราศาสตร์ ณ เที่ยงวัน';
+  const subDate=S.mod==='chinese'?thMonthYear(S.date):thDate(skyDateFor());
+  return `<div class="astro">
+    <h2>🌌 ตำแหน่งดวงดาวประจำวัน</h2>
+    <div class="astro-sub">${subDate} · ${note}</div>
+    <div class="planets">${pls}</div>
+    <div class="astro-foot">
+      <div class="af"><div class="nm">🌙 พระจันทร์</div><div class="vl">${ph.label} · สว่าง ${ph.illum}%<br>${ph.thai}</div></div>
+      <div class="af"><div class="nm">🇹🇭 วัน${day.th} · สีมงคล</div><div class="vl"><span class="sw" style="background:${day.mong[1]}"></span>${day.mong[0]} &nbsp;🚫 <span class="sw" style="background:${day.kala[1]}"></span>${day.kala[0]}</div></div>
+      <div class="af"><div class="nm">⏰ ช่วงเวลามงคล</div><div class="vl">${day.time}</div></div>
+      <div class="af"><div class="nm">🔢 เลขศาสตร์วันนี้ = ${nd}</div><div class="vl">${NUM_MEANING[nd]}</div></div>
+    </div>
+  </div>`;
+}
+function retroBanner(sky){
+  const list=['mercury','venus','mars','jupiter','saturn'].filter(n=>sky.retro[n]);
+  if(!list.length)return'';
+  const names=list.map(n=>PLANET_TH[n][1]+' '+PLANET_TH[n][0]).join(', ');
+  const tip=sky.retro.mercury?' — ระวังการสื่อสาร เซ็นสัญญา เดินทาง และอุปกรณ์อิเล็กทรอนิกส์':'';
+  return `<div class="retro-banner">↩️ <span><b>ดาวย้อนหลัง:</b> ${names}${tip}</span></div>`;
+}
+function cardFortune(meta,f){
+  const infChips=f.inf.map(x=>`<span class="inf${x[1]?' warn':''}">${x[0]}</span>`).join('');
+  return `<div class="card">
+    <div class="card-head">
+      <div class="badge">${meta.em}</div>
+      <div><h3>${meta.th}</h3><div class="range">${meta.range||meta.sub||''} · ธาตุ${meta.el||'-'}</div></div>
+      <div class="stars">${starStr(f.star)}</div>
+    </div>
+    <div class="influence">${infChips}</div>
+    <div class="lines">
+      <div class="row"><span class="ic">🔮</span><span>${f.overview}</span></div>
+      <div class="row"><span class="ic">💖</span><span><b>รัก</b> ${f.love}</span></div>
+      <div class="row"><span class="ic">💰</span><span><b>เงิน</b> ${f.money}</span></div>
+      <div class="row"><span class="ic">💼</span><span><b>งาน</b> ${f.work}</span></div>
+      <div class="row"><span class="ic">✨</span><span><b>เคล็ด</b> ${f.advice}</span></div>
+    </div>
+    <div class="chips">
+      <span class="chip"><span class="k">เลข</span>${f.nums.join(' ')}</span>
+      <span class="chip"><span class="swatch" style="background:${f.color[1]}"></span>${f.color[0]}</span>
+      <span class="chip"><span class="k">🚫</span>${f.kala[0]}</span>
+    </div>
+    <div class="card-foot">
+      <button class="mini" data-copy="cap">📋 แคปชั่น</button>
+      <button class="mini" data-copy="tag"># แท็ก</button>
+      <button class="mini" data-copy="img">🖼️ Prompt รูป</button>
+    </div>
+  </div>`;
+}
+function cardOracle(c,pos){
+  const rev=c._rev&&c.rm;
+  const meaning=rev?c.rm:c.m;
+  const advice=c.a||'';
+  const visual=c.img
+    ?`<div class="oc-img-wrap${rev?' oc-rev':''}"><img class="oc-img" src="${c.img}" alt=""></div>`
+    :`<div class="oc-emoji${rev?' oc-rev':''}">${c.e||'🃏'}</div>`;
+  return `<div class="card oracle-card${rev?' oracle-rev':''}">
+    ${pos?`<div class="pos-badge">${pos}</div>`:''}
+    ${visual}
+    ${rev?'<div class="rev-badge">🔄 กลับหัว (Reversed)</div>':''}
+    <div class="card-head" style="margin-top:10px"><div><h3>${c.n}</h3><div class="range">${rev?'ความหมายกลับหัว':'ความหมายไพ่'}</div></div></div>
+    <div class="oracle-meaning${rev?' rev-meaning':''}">${meaning}</div>${advice?`<div class="oracle-advice">${advice}</div>`:''}
+    <div class="card-foot"><button class="mini" data-copy="cap">📋 แคปชั่น</button><button class="mini" data-copy="tag"># แท็ก</button></div>
+  </div>`;}
+
+/* ============================================================
+   ไพ่ทำนาย — ใช้สำรับไพ่ทาโรต์มาตรฐาน 78 ใบ (TAROT_DECK) เสมอ
+   ผู้ใช้แนบ "รูปหน้าไพ่จริง" ทับได้ (เก็บแยกใน localStorage ไม่กระทบชื่อ/ความหมายที่มีอยู่)
+   ============================================================ */
+const TAROT_IMG_KEY='duang_tarot_imgs';
+function loadTarotImgs(){try{return JSON.parse(localStorage.getItem(TAROT_IMG_KEY))||{};}catch(e){return{};}}
+function saveTarotImgs(map){
+  try{localStorage.setItem(TAROT_IMG_KEY,JSON.stringify(map));return true;}
+  catch(e){toast('พื้นที่เก็บเต็ม — รูปอาจมากหรือใหญ่เกินไป ลองลดจำนวน/ขนาดไฟล์');return false;}
+}
+function activeDeck(){const imgs=loadTarotImgs();return TAROT_DECK.map(c=>imgs[c.id]?{...c,img:imgs[c.id]}:c);}
+
+/* ย่อรูปก่อนเก็บ เพื่อไม่ให้ localStorage บวม */
+function imgToThumb(file,cb){
+  const reader=new FileReader();
+  reader.onload=e=>{const img=new Image();img.onload=()=>{
+    const max=480;let w=img.width,h=img.height;
+    if(w>h&&w>max){h=Math.round(h*max/w);w=max;}else if(h>=w&&h>max){w=Math.round(w*max/h);h=max;}
+    const c=document.createElement('canvas');c.width=w;c.height=h;
+    c.getContext('2d').drawImage(img,0,0,w,h);
+    cb(c.toDataURL('image/jpeg',0.78));
+  };img.onerror=()=>cb('');img.src=e.target.result;};
+  reader.readAsDataURL(file);
+}
+/* บีบอัดรูป Pattern ก่อนเก็บ (จำกัดด้านยาวสุด ~1600px + แปลงเป็น JPEG) กัน localStorage เต็มเร็วเกินไป
+   ยังคมพอสำหรับโพสต์โซเชียล แต่เล็กกว่าไฟล์ดิบหลายเท่า โดยเฉพาะถ้าอัปโหลดเป็น PNG */
+function compressPatternImage(file,cb){
+  const reader=new FileReader();
+  reader.onload=e=>{const img=new Image();img.onload=()=>{
+    const max=1600;let w=img.width,h=img.height;
+    if(w>max||h>max){
+      if(w>=h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}
+    }
+    const c=document.createElement('canvas');c.width=w;c.height=h;
+    c.getContext('2d').drawImage(img,0,0,w,h);
+    cb(c.toDataURL('image/jpeg',0.86));
+  };img.onerror=()=>{toast('อ่านรูปไม่ได้');cb('');};img.src=e.target.result;};
+  reader.readAsDataURL(file);
+}
+/* แนบรูปทีละหลายไฟล์: เรียงชื่อไฟล์ (เช่น 00,01,02...) แล้วจับคู่ตามลำดับไพ่มาตรฐาน 0-77 */
+function bulkUploadTarotImages(fileList){
+  const files=Array.from(fileList).sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
+  if(!files.length)return;
+  const n=Math.min(files.length,TAROT_DECK.length);
+  const imgs=loadTarotImgs();
+  let done=0;
+  toast('กำลังแนบรูป '+n+' ใบ...');
+  files.slice(0,n).forEach((f,i)=>{
+    imgToThumb(f,dataUrl=>{
+      if(dataUrl)imgs[TAROT_DECK[i].id]=dataUrl;
+      done++;
+      if(done===n){if(saveTarotImgs(imgs))toast('แนบรูปไพ่แล้ว '+n+' ใบ — จั่วไพ่ใหม่เพื่อดูผล');}
+    });
+  });
+}
+function clearTarotImages(){
+  if(!confirm('ลบรูปไพ่ที่แนบไว้ทั้งหมด กลับไปใช้สัญลักษณ์ 🃏 แทน?'))return;
+  localStorage.removeItem(TAROT_IMG_KEY);
+  toast('ลบรูปไพ่ทั้งหมดแล้ว');
+}
+
+function run(mode){
+  const sky=computeSky(skyDateFor());S.sky=sky;
+  let html='',items=[],top=retroBanner(sky)+astroPanel(sky);
+
+  if(S.mod==='zodiac'||S.mod==='chinese'){
+    const src=S.mod==='zodiac'?SIGNS:CHINESE;
+    src.forEach((m,realIdx)=>{
+      const sc=S.mod==='zodiac'?scoreZodiac(realIdx,sky):scoreChinese(realIdx,sky);
+      const f=buildFortune(m,realIdx,sky,sc);
+      const nm=S.mod==='zodiac'?m.th:m.th+' ('+m.sub+')';
+      items.push({title:m.th,cap:captionFortune(nm,f,sky),tag:hashtagsFor(m.th),img:imgPrompt(m.sym,m.th),quote:`"${f.advice}"`});
+      html+=cardFortune(m,f);
+    });
+    html=top+`<div class="grid">${html}</div>`;
+  }else if(S.mod==='oracle'){
+    const deck=activeDeck();
+    if(!deck.length){
+      elResults.innerHTML='<div class="empty"><div class="big">🎴</div>โหลดสำรับไพ่ทาโรต์ไม่สำเร็จ — ลองรีโหลดหน้าใหม่นะคะ</div>';
+      elToolbar.style.display='none';return;
+    }
+    const SPREADS={single:{n:1,pos:['ไพ่คำตอบ']},three:{n:3,pos:['อดีต','ปัจจุบัน','อนาคต']},cross:{n:7,pos:['เจ้าชะตา','การเงิน','ครอบครัว','ความรัก','สังคม','การงาน','บริวาร/บทสรุป']},celtic:{n:10,pos:['เจ้าชะตา','สิ่งแวดล้อม','สิ่งที่มุ่งหวัง','อดีต/พื้นฐาน','อดีต/บริวาร','อนาคตใกล้','ปัญหา/คำแนะนำ','บุคคลเกี่ยวข้อง','ความคิดที่ซ่อนไว้','ผลสรุป']},pyramid:{n:4,pos:['ไพ่บริวาร 1','ไพ่บริวาร 2','ไพ่บริวาร 3','คำตอบเมเจอร์']},age:{n:10,pos:['ไพ่ 1 (แกน)','ไพ่ 2 (5-6ข.)','ไพ่ 3 (8-9ข.)','ไพ่ 4 (0-3ข.)','ไพ่ 5 (4ข./14/24ปี)','ไพ่ 6 (7ข./17/27ปี)','ไพ่ 7 (30-33ปี)','ไพ่ 8 (34-36ปี)','ไพ่ 9 (37-39ปี)','ไพ่ 10 (40/56-76ปี)']}};
+    const sp=SPREADS[mode]||SPREADS.three;
+    const n=Math.min(sp.n,deck.length);
+    const drawn=[];const used=new Set();let salt=0;
+    while(drawn.length<n&&salt<999){const c=rngPick(wordSeed('oracle_'+mode+'_'+salt),deck);if(!used.has(c.n)){used.add(c.n);
+      // สุ่มกลับหัว 40% (seeded ตามวันที่+ตำแหน่ง)
+      const rev=rngPick(wordSeed('rev_'+mode+'_'+salt+'_'+drawn.length),[0,0,0,1,1,0,1,0,0,0])===1;
+      drawn.push({...c,_rev:rev});
+    }salt++;}
+    const spreadLabel={single:'1 ใบ',three:'3 ใบ (อดีต-ปัจจุบัน-อนาคต)',cross:'ไม้กางเขน 7 ใบ',celtic:'Celtic Cross 10 ใบ',pyramid:'ปิรามิด 4 ใบ',age:'เรียง 10 ใบ (อายุขัย)'}[mode]||mode;
+    let oHtml=`<div class="spread-title">🃏 ${spreadLabel} — ${thDate(S.date)}</div><div class="spread-grid">`;
+    const fullCap=[];
+    drawn.forEach((c,i)=>{
+      const pos=sp.pos[i]||('ตำแหน่ง '+(i+1));
+      oHtml+=cardOracle(c,pos);
+      const meaning=c._rev&&c.rm?c.rm:c.m;
+      const revLabel=c._rev&&c.rm?' (กลับหัว)':'';
+      fullCap.push('['+pos+'] '+c.n+revLabel+'\n'+meaning+(c.a?'\n✨ '+c.a:''));
+      items.push({title:pos+': '+c.n+revLabel,cap:'🃏 '+pos+': "'+c.n+'"'+revLabel+'\n'+thDate(S.date)+'\n\n'+meaning+(c.a?'\n\n✨ '+c.a:''),tag:hashtagsFor('ไพ่ทำนาย'),img:'',quote:'"'+meaning+'"'});
+    });
+    oHtml+=`</div><div class="card" style="margin-top:14px"><div class="card-foot"><button class="mini" id="copySpread">📋 คัดลอกทั้งหมด</button><button class="mini" id="copySpreadTag"># แท็ก</button></div></div>`;
+    S._spreadCap='🃏 ไพ่ทำนาย '+thDate(S.date)+'\nวิธีวาง: '+spreadLabel+'\n\n'+fullCap.join('\n\n───\n\n')+'\n\n'+hashtagsFor('ไพ่ทำนาย');
+    S.last=items;
+    elResults.innerHTML=oHtml;
+    const csBtn=document.getElementById('copySpread');if(csBtn)csBtn.onclick=()=>copy(S._spreadCap,'คัดลอกแล้ว');
+    const ctBtn=document.getElementById('copySpreadTag');if(ctBtn)ctBtn.onclick=()=>copy(hashtagsFor('ไพ่ทำนาย'),'คัดลอกแท็กแล้ว');
+    elToolbar.style.display='flex';elCount.textContent='จั่วไพ่ '+drawn.length+' ใบ ('+spreadLabel+') · '+thDate(S.date);
+    return;
+  }else if(S.mod==='money'){
+    runMoneyInfographic(sky,items);return;
+  }else if(S.mod==='lucky'){
+    runLuckyInfographic(sky,items);return;
+  }else if(S.mod==='birthday'){
+    const wd=S.bday,day=THAI_DAY[wd],info=BIRTHDAY_INFO[wd];
+    const dayNames=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+    const advice=rngPick(wordSeed('bday_adv_'+wd),ADVICE_FLAVOR);
+    const cap=`🎂 ดวงคนเกิดวัน${dayNames[wd]} ${info.em}\n\n`+
+      `🌟 บุคลิก: ${info.personality}\n💪 จุดแข็ง: ${info.strength}\n⚠️ ข้อควรระวัง: ${info.watch}\n\n`+
+      `💖 ความรัก: ${info.love}\n💰 การเงิน: ${info.money}\n💼 การงาน: ${info.work}\n🍀 สุขภาพ: ${info.health}\n\n`+
+      `🎨 สีมงคล: ${day.mong[0]} | 🚫 กาลกิณี: ${day.kala[0]}\n⏰ ช่วงเวลามงคล: ${day.time}\n\n✨ เคล็ดเสริมดวง: ${advice}`;
+    items.push({title:'เกิดวัน'+dayNames[wd],cap,tag:hashtagsFor('ดวงวันเกิด'),img:imgPrompt('Thai astrology birthday fortune symbol, '+dayNames[wd],'เกิดวัน'+dayNames[wd]),quote:`"${info.personality}"`});
+    html=`<div class="card" style="margin-bottom:16px">
+      <div class="card-head">
+        <div class="badge">${info.em}</div>
+        <div><h3>คนเกิดวัน${dayNames[wd]}</h3><div class="range">ดวงประจำวันเกิด</div></div>
+      </div>
+      <div class="lines">
+        <div class="row"><span class="ic">🌟</span><span><b>บุคลิก</b> ${info.personality}</span></div>
+        <div class="row"><span class="ic">💪</span><span><b>จุดแข็ง</b> ${info.strength}</span></div>
+        <div class="row"><span class="ic">⚠️</span><span><b>ข้อควรระวัง</b> ${info.watch}</span></div>
+        <div class="row"><span class="ic">💖</span><span><b>รัก</b> ${info.love}</span></div>
+        <div class="row"><span class="ic">💰</span><span><b>เงิน</b> ${info.money}</span></div>
+        <div class="row"><span class="ic">💼</span><span><b>งาน</b> ${info.work}</span></div>
+        <div class="row"><span class="ic">🍀</span><span><b>สุขภาพ</b> ${info.health}</span></div>
+        <div class="row"><span class="ic">✨</span><span><b>เคล็ด</b> ${advice}</span></div>
+      </div>
+      <div class="chips">
+        <span class="chip"><span class="swatch" style="background:${day.mong[1]}"></span>${day.mong[0]}</span>
+        <span class="chip"><span class="k">🚫</span>${day.kala[0]}</span>
+        <span class="chip"><span class="k">⏰</span>${day.time}</span>
+      </div>
+      <div class="card-foot">
+        <button class="mini" data-copy="cap">📋 แคปชั่น</button>
+        <button class="mini" data-copy="tag"># แท็ก</button>
+        <button class="mini" data-copy="img">🖼️ Prompt รูป</button>
+      </div>
+    </div>`;
+  }
+  S.last=items;
+  elResults.innerHTML=html;
+  elResults.querySelectorAll('.card-foot').forEach((foot,idx)=>{
+    const it=items[idx]||items[0];
+    foot.querySelectorAll('[data-copy]').forEach(btn=>btn.onclick=()=>{
+      const t=btn.getAttribute('data-copy'),text=t==='cap'?it.cap:t==='tag'?it.tag:it.img;
+      copy(text,t==='cap'?'คัดลอกแคปชั่นแล้ว':t==='tag'?'คัดลอกแท็กแล้ว':'คัดลอก Prompt รูปแล้ว');
+    });
+  });
+  elToolbar.style.display='flex';
+  elCount.textContent=`สร้างแล้ว ${items.length} รายการ · ${S.mod==='chinese'?thMonthYear(S.date):thDate(S.date)}`;
+}
+
+/* ============================================================
+   💰 Infographic ดวงการเงินรายสัปดาห์ — canvas → PNG
+   ============================================================ */
+function weekRange(iso){
+  const d=new Date(iso+'T00:00:00'),day=(d.getDay()+6)%7;
+  const mon=new Date(d);mon.setDate(d.getDate()-day);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  const m=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const fmt=dt=>dt.getDate()+' '+m[dt.getMonth()];
+  return fmt(mon)+' – '+fmt(sun)+' '+(sun.getFullYear()+543);
+}
+/* ช่วงวันที่แบบเต็ม ใช้ในแคปชั่นโพสต์ เช่น "15 - 21 กรกฎาคม 2569" */
+function weekRangeFull(iso){
+  const d=new Date(iso+'T00:00:00'),day=(d.getDay()+6)%7;
+  const mon=new Date(d);mon.setDate(d.getDate()-day);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  const mf=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const year=sun.getFullYear()+543;
+  if(mon.getMonth()===sun.getMonth())return mon.getDate()+' - '+sun.getDate()+' '+mf[sun.getMonth()]+' '+year;
+  return mon.getDate()+' '+mf[mon.getMonth()]+' - '+sun.getDate()+' '+mf[sun.getMonth()]+' '+year;
+}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
+function wrapText(ctx,text,x,y,maxW,lineH){
+  let line='',cy=y;
+  for(let i=0;i<text.length;i++){const c=text[i],test=line+c;
+    if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,cy);line=c;cy+=lineH;if(cy>y+lineH*3)break;}else line=test;}
+  if(line)ctx.fillText(line,x,cy);
+}
+/* ตัดคำภาษาไทยแบบไม่ทิ้งเศษคำ
+   1) ถ้าข้อความมีเว้นวรรคคั่นคำอยู่แล้ว (เราเติมเว้นวรรคไว้ในคลังคำสำหรับ canvas) ใช้เว้นวรรคเป็นหลัก — แม่นยำสุด ไม่พึ่งเบราว์เซอร์
+   2) ถ้าไม่มีเว้นวรรคเลย ค่อย fallback ไปใช้ Intl.Segmenter ถ้ารองรับ
+   3) ถ้าไม่รองรับเลย ค่อย fallback เป็นตัดทีละตัวอักษร (เคสสุดท้ายจริง ๆ) */
+function thWords(text){
+  /* ถ้ามีเว้นวรรคอยู่ในข้อความ ให้เก็บเว้นวรรคติดไว้ท้ายคำเดิม (ไม่ลบทิ้ง)
+     เพื่อให้ข้อความที่วาดออกมาตรงกับที่พิมพ์ไว้ในกล่องแก้ไขเป๊ะ ๆ — แค่ตัดบรรทัดให้ปลอดภัยตามคำ */
+  if(/\s/.test(text))return text.match(/\S+\s*/g)||[];
+  if(typeof Intl!=='undefined'&&Intl.Segmenter){
+    try{return Array.from(new Intl.Segmenter('th',{granularity:'word'}).segment(text),s=>s.segment);}catch(e){}
+  }
+  return text.split('');
+}
+function wrapThaiLines(ctx,text,maxW){
+  const tokens=thWords(text);
+  const lines=[];let cur='';
+  const flush=()=>{if(cur.trim())lines.push(cur.trim());cur='';};
+  for(const tok of tokens){
+    if(ctx.measureText(tok).width>maxW){
+      flush();
+      let sub='';
+      for(const ch of tok){
+        const t2=sub+ch;
+        if(ctx.measureText(t2).width>maxW&&sub){lines.push(sub);sub=ch;}else sub=t2;
+      }
+      cur=sub;continue;
+    }
+    const test=cur+tok;
+    if(ctx.measureText(test).width>maxW&&cur.trim()){flush();cur=tok;}else cur=test;
+  }
+  flush();
+  return lines;
+}
+/* ============================================================
+   เอนจิน Infographic อเนกประสงค์ — กล่องข้อความลาก/ปรับขนาด/แก้คำได้ + 5 ช่องเก็บ Pattern
+   ใช้ร่วมกันได้ทุกแท็บ (เงิน, เลขมงคล, ฯลฯ) แค่ส่ง config ต่างกัน
+   cfg = {storageKey, baseW, baseH, makeDefaultBoxes(), cap, tag, header, countLabel, filenamePrefix}
+   ============================================================ */
+function renderInfographicEditor(cfg){
+  const {storageKey,baseW,baseH,makeDefaultBoxes,cap,tag,header,countLabel,filenamePrefix}=cfg;
+  const ACTIVE_KEY=storageKey+'ActiveSlot';
+  const pctBox=([x1,y1,x2,y2])=>({left:x1/baseW*100,top:y1/baseH*100,width:(x2-x1)/baseW*100,height:(y2-y1)/baseH*100});
+  function defaultBoxes(){return makeDefaultBoxes().map(b=>({id:b.id,...pctBox(b.rectPx),fontPct:b.fontPct,color:b.color,text:b.text}));}
+
+  /* ── 5 ช่องเก็บ Pattern คู่กับตำแหน่งกล่องของมันเอง ── */
+  const SLOT_COUNT=5, SLOTS_KEY='duang_'+storageKey+'_slots';
+  function loadPatternSlots(){
+    try{
+      const s=JSON.parse(localStorage.getItem(SLOTS_KEY));
+      if(Array.isArray(s)&&s.length===SLOT_COUNT)return s;
+    }catch(e){}
+    const arr=Array.from({length:SLOT_COUNT},()=>({img:null,layout:null}));
+    const oldImg=localStorage.getItem('duang_'+storageKey+'_pattern'); /* ย้ายของเก่า (ก่อนมีระบบ 5 ช่อง) มาไว้ช่อง 1 */
+    if(oldImg){
+      let oldLayout=null;try{oldLayout=JSON.parse(localStorage.getItem('duang_'+storageKey+'_layout'));}catch(e){}
+      arr[0]={img:oldImg,layout:oldLayout};
+    }
+    return arr;
+  }
+  const pSlots=loadPatternSlots();
+  function savePatternSlots(){
+    try{localStorage.setItem(SLOTS_KEY,JSON.stringify(pSlots));return true;}
+    catch(e){toast('⚠️ บันทึกไม่สำเร็จ — พื้นที่เก็บเต็ม ลองลบ Pattern ช่องอื่นที่ไม่ใช้ออกก่อน');return false;}
+  }
+  if(S[ACTIVE_KEY]==null||S[ACTIVE_KEY]>=SLOT_COUNT){
+    const f=pSlots.findIndex(s=>s.img);S[ACTIVE_KEY]=f>=0?f:0;
+  }
+
+  function applyLayout(boxesArr,layout){
+    if(!layout)return;
+    boxesArr.forEach(b=>{
+      const s=layout.find(x=>x.id===b.id);
+      if(s)Object.assign(b,{left:s.left,top:s.top,width:s.width,height:s.height,fontPct:s.fontPct});
+    });
+  }
+  /* สร้างชุดกล่องจากข้อมูลที่บันทึกไว้ของช่องนั้น: เอากล่องเริ่มต้นมาก่อน (ตัด
+     กล่องที่ผู้ใช้ลบทิ้งไปออก ถ้ามี layout บันทึกไว้) แล้วต่อด้วยกล่องที่ผู้ใช้เพิ่มเอง (extra) */
+  function buildBoxesFromSlot(slot){
+    let arr=defaultBoxes();
+    if(slot&&slot.layout){
+      const keepIds=new Set(slot.layout.map(x=>x.id));
+      arr=arr.filter(b=>keepIds.has(b.id));
+      applyLayout(arr,slot.layout);
+    }
+    if(slot&&slot.extra)arr=arr.concat(slot.extra.map(b=>({...b})));
+    return arr;
+  }
+  let boxes=buildBoxesFromSlot(pSlots[S[ACTIVE_KEY]]);
+  /* แยกบันทึก: layout = ตำแหน่ง/ขนาดของกล่องเริ่มต้น (เนื้อหาคำนวณใหม่ทุกครั้งจาก makeDefaultBoxes),
+     extra = กล่องที่ผู้ใช้เพิ่มเอง (ต้องเก็บข้อความ/สีไว้เต็มๆ เพราะไม่มีของเริ่มต้นให้คำนวณใหม่) */
+  function currentLayoutSplit(){
+    const layout=[],extra=[];
+    boxes.forEach(b=>{
+      if(b.custom)extra.push({...b});
+      else layout.push({id:b.id,left:b.left,top:b.top,width:b.width,height:b.height,fontPct:b.fontPct});
+    });
+    return{layout,extra};
+  }
+
+  function fontPx(b,stage){return Math.max(8,b.fontPct/100*stage.clientWidth);}
+
+  function bindDrag(el,b,stage){
+    const handle=el.querySelector('.edrag');
+    handle.onpointerdown=e=>{
+      e.preventDefault();handle.setPointerCapture(e.pointerId);
+      const rect=stage.getBoundingClientRect();
+      const startX=e.clientX,startY=e.clientY,startLeft=b.left,startTop=b.top;
+      const move=ev=>{
+        const dxPct=(ev.clientX-startX)/rect.width*100, dyPct=(ev.clientY-startY)/rect.height*100;
+        b.left=Math.min(100-b.width,Math.max(0,startLeft+dxPct));
+        b.top=Math.min(100-b.height,Math.max(0,startTop+dyPct));
+        el.style.left=b.left+'%';el.style.top=b.top+'%';
+      };
+      const up=()=>{try{handle.releasePointerCapture(e.pointerId);}catch(er){}document.removeEventListener('pointermove',move);document.removeEventListener('pointerup',up);};
+      document.addEventListener('pointermove',move);document.addEventListener('pointerup',up);
+    };
+  }
+  function bindResize(el,b,stage){
+    const handle=el.querySelector('.eresize');
+    handle.onpointerdown=e=>{
+      e.preventDefault();e.stopPropagation();handle.setPointerCapture(e.pointerId);
+      const rect=stage.getBoundingClientRect();
+      const startX=e.clientX,startY=e.clientY,startW=b.width,startH=b.height;
+      const move=ev=>{
+        const dwPct=(ev.clientX-startX)/rect.width*100, dhPct=(ev.clientY-startY)/rect.height*100;
+        b.width=Math.max(6,Math.min(100-b.left,startW+dwPct));
+        b.height=Math.max(4,Math.min(100-b.top,startH+dhPct));
+        el.style.width=b.width+'%';el.style.height=b.height+'%';
+        el.querySelector('.etext').style.fontSize=fontPx(b,stage)+'px';
+      };
+      const up=()=>{try{handle.releasePointerCapture(e.pointerId);}catch(er){}document.removeEventListener('pointermove',move);document.removeEventListener('pointerup',up);};
+      document.addEventListener('pointermove',move);document.addEventListener('pointerup',up);
+    };
+  }
+  function makeBoxEl(b,stage){
+    const el=document.createElement('div');el.className='ebox';
+    el.style.left=b.left+'%';el.style.top=b.top+'%';el.style.width=b.width+'%';el.style.height=b.height+'%';
+    el.innerHTML='<span class="edrag" title="ลากย้าย">✥</span>'
+      +'<button class="edel" type="button" title="ลบกล่องนี้">✕</button>'
+      +'<span class="efsize"><button class="fminus" type="button" title="ตัวเล็กลง">A−</button><button class="fplus" type="button" title="ตัวใหญ่ขึ้น">A+</button></span>'
+      +'<div class="etext" contenteditable="true" spellcheck="false" style="font-size:'+fontPx(b,stage)+'px;color:'+b.color+'"></div>'
+      +'<span class="eresize" title="ลากปรับขนาดกล่อง"></span>';
+    const txtEl=el.querySelector('.etext');
+    txtEl.textContent=b.text;
+    txtEl.oninput=ev=>{b.text=ev.target.innerText;};
+    el.querySelector('.fminus').onclick=ev=>{ev.preventDefault();b.fontPct=Math.max(1,b.fontPct-0.3);txtEl.style.fontSize=fontPx(b,stage)+'px';};
+    el.querySelector('.fplus').onclick=ev=>{ev.preventDefault();b.fontPct=Math.min(15,b.fontPct+0.3);txtEl.style.fontSize=fontPx(b,stage)+'px';};
+    el.querySelector('.edel').onclick=ev=>{
+      ev.preventDefault();
+      if(!confirm('ลบกล่องข้อความนี้?'))return;
+      const idx=boxes.indexOf(b);if(idx>=0)boxes.splice(idx,1);
+      el.remove();
+    };
+    bindDrag(el,b,stage);bindResize(el,b,stage);
+    return el;
+  }
+  function addBox(stage){
+    const b={id:'custom'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),custom:true,
+      left:30,top:40,width:35,height:8,fontPct:4,color:'#260a00',text:'ข้อความใหม่'};
+    boxes.push(b);
+    stage.appendChild(makeBoxEl(b,stage));
+  }
+
+  function bindUpload(){
+    const up=document.getElementById('patUpload');
+    if(!up)return;
+    up.onchange=e=>{
+      const f=e.target.files[0];if(!f)return;
+      compressPatternImage(f,dataUrl=>{
+        buildEditor(dataUrl);
+        toast('โหลดรูปแล้ว — กด "บันทึกลงช่องนี้" เพื่อเก็บไว้ใช้ครั้งหน้า');
+      });
+    };
+  }
+  function saveCurrentToSlot(imgSrc){
+    const prev=pSlots[S[ACTIVE_KEY]];
+    const{layout,extra}=currentLayoutSplit();
+    pSlots[S[ACTIVE_KEY]]={img:imgSrc,layout,extra};
+    if(savePatternSlots()){
+      toast('บันทึก Pattern + ตำแหน่ง ลงช่อง '+(S[ACTIVE_KEY]+1)+' แล้ว');
+      renderSlotBar();
+    }else{
+      pSlots[S[ACTIVE_KEY]]=prev; /* เขียนไม่สำเร็จ — คืนค่าเดิมกันสถานะในหน่วยความจำเพี้ยนไปจากที่บันทึกจริง */
+    }
+  }
+  function selectSlot(i){
+    S[ACTIVE_KEY]=i;
+    const slot=pSlots[i];
+    boxes=buildBoxesFromSlot(slot);
+    buildEditor(slot&&slot.img?slot.img:null);
+  }
+  function renderSlotBar(){
+    const bar=document.getElementById('slotBar');if(!bar)return;
+    bar.innerHTML=pSlots.map((s,i)=>{
+      const cls='slotbtn'+(i===S[ACTIVE_KEY]?' active':'')+(s.img?'':' empty');
+      const inner=s.img?'<img src="'+s.img+'" alt="">':'<span>+</span>';
+      return '<button class="'+cls+'" data-i="'+i+'" type="button" title="ช่อง '+(i+1)+'">'+inner+'<b>'+(i+1)+'</b></button>';
+    }).join('');
+    bar.querySelectorAll('.slotbtn').forEach(btn=>btn.onclick=()=>selectSlot(+btn.dataset.i));
+  }
+
+  async function ensureFontReady(){
+    try{
+      const baiJ=new FontFace('Bai Jamjuree','url(https://fonts.gstatic.com/s/baijamjuree/v13/LDIqapSCOBt_aeQQ7ftydoa05efukw.ttf)',{weight:'700'});
+      await baiJ.load();document.fonts.add(baiJ);await document.fonts.ready;
+    }catch(e){}
+  }
+  /* วาด pattern + กล่องข้อความทั้งหมดลง canvas แล้วคืนค่า canvas กลับมา (ไม่ดาวน์โหลด/โพสต์ — ให้ผู้เรียกตัดสินใจเอง) */
+  function renderBoxesToCanvas(imgSrc,boxesArr){
+    return new Promise((resolve,reject)=>{
+      const bgImg=new Image();
+      bgImg.onload=()=>{
+        const cv=document.createElement('canvas');
+        cv.width=bgImg.naturalWidth;cv.height=bgImg.naturalHeight;
+        const ctx=cv.getContext('2d');
+        ctx.drawImage(bgImg,0,0);
+        boxesArr.forEach(b=>{
+          const text=(b.text||'').trim();if(!text)return;
+          const x=b.left/100*cv.width, y=b.top/100*cv.height, w=b.width/100*cv.width, h=b.height/100*cv.height;
+          let size=Math.max(10,Math.round(b.fontPct/100*cv.width)), lines=[];
+          for(;size>=10;size-=1){
+            ctx.font=`bold ${size}px 'Bai Jamjuree', sans-serif`;
+            lines=text.split('\n').flatMap(p=>wrapThaiLines(ctx,p,w-8));
+            if(lines.length*(size*1.3)<=h-6)break;
+          }
+          const lh=size*1.3;
+          ctx.font=`bold ${size}px 'Bai Jamjuree', sans-serif`;
+          ctx.fillStyle=b.color;ctx.textAlign='center';ctx.textBaseline='middle';
+          const cx=x+w/2;let ty=y+h/2-(lines.length-1)*lh/2;
+          lines.forEach((ln,j)=>ctx.fillText(ln,cx,ty+j*lh));
+          ctx.textAlign='left';ctx.textBaseline='alphabetic';
+        });
+        resolve(cv);
+      };
+      bgImg.onerror=()=>reject(new Error('โหลด pattern ไม่ได้'));
+      bgImg.src=imgSrc;
+    });
+  }
+  async function exportImage(imgSrc){
+    await ensureFontReady();
+    try{
+      const cv=await renderBoxesToCanvas(imgSrc,boxes);
+      const out=cv.toDataURL('image/png');
+      const a=document.createElement('a');a.href=out;a.download=filenamePrefix+'.png';a.click();
+      toast('บันทึกภาพแล้ว');
+    }catch(e){toast(e.message||'สร้างภาพไม่สำเร็จ');}
+  }
+  /* ── โหมด Automation (headless): วาดภาพแล้วส่งตรงไปที่ Make.com webhook โดยไม่แสดง UI editor ──
+     ใช้ตอนเปิดหน้านี้ด้วย ?auto=money/lucky&webhook=... (ดู bootstrap ท้ายไฟล์) */
+  function markAutoStatus(status,detail){
+    document.title=status==='done'?'AUTO_DONE':'AUTO_ERROR';
+    let el=document.getElementById('autoStatus');
+    if(!el){el=document.createElement('div');el.id='autoStatus';document.body.appendChild(el);}
+    el.setAttribute('data-status',status);
+    el.textContent=detail||status;
+  }
+  async function postHeadless(slot,webhookUrl){
+    await ensureFontReady();
+    if(!slot||!slot.img)throw new Error('ไม่มี pattern ใน '+storageKey+'-pattern.json');
+    const boxesArr=buildBoxesFromSlot(slot);
+    const cv=await renderBoxesToCanvas(slot.img,boxesArr);
+    const blob=await new Promise(res=>cv.toBlob(res,'image/png'));
+    const fd=new FormData();
+    fd.append('image',blob,filenamePrefix+'.png');
+    fd.append('caption',cap);
+    fd.append('tag',tag);
+    const res=await fetch(webhookUrl,{method:'POST',body:fd});
+    if(!res.ok)throw new Error('ส่งไป webhook ไม่สำเร็จ: HTTP '+res.status);
+  }
+
+  function buildEditor(imgSrc){
+    const wrap=document.createElement('div');wrap.className='money-preview';
+    const slotBarHtml='<div class="slot-bar" id="slotBar"></div>';
+    if(!imgSrc){
+      wrap.innerHTML=slotBarHtml
+        +'<div class="mp-head" style="color:var(--ember)">⚠️ ช่องนี้ยังไม่มี Pattern — อัปโหลดรูปแล้วกด "บันทึกลงช่องนี้"</div>'
+        +'<label class="mini" style="cursor:pointer;margin-top:10px">🖼️ อัปโหลด Pattern PNG<input type="file" id="patUpload" accept="image/png,image/jpeg" hidden></label>'
+        +'<div class="mp-caption" style="white-space:pre-wrap;font-size:13px;margin-top:14px;color:var(--muted)">'+cap+'</div>'
+        +'<div class="mp-tag" style="font-size:12px;color:var(--jade);margin-top:6px">'+tag+'</div>';
+      elResults.innerHTML='';elResults.appendChild(wrap);
+      renderSlotBar();
+      bindUpload();
+      elToolbar.style.display='flex';elCount.textContent=countLabel;
+      return;
+    }
+    wrap.innerHTML=slotBarHtml
+      +'<div class="mp-head">'+header+'</div>'
+      +'<div class="editor-stage" id="editorStage"><img id="editorImg" src="'+imgSrc+'" draggable="false" alt=""></div>'
+      +'<div class="mp-actions">'
+      +'<button class="btn btn-gold" id="saveImgBtn">💾 บันทึกเป็นภาพ</button>'
+      +'<button class="mini" id="addBoxBtn">➕ เพิ่มกล่องข้อความ</button>'
+      +'<button class="mini" id="copyAllText">📋 Copy</button>'
+      +'</div>'
+      +'<div class="mp-actions">'
+      +'<button class="mini" id="saveSlotBtn">📌 บันทึกลงช่องนี้ ('+(S[ACTIVE_KEY]+1)+')</button>'
+      +'<button class="mini" id="delSlotBtn">🗑️ ลบช่องนี้</button>'
+      +'<button class="mini" id="resetBoxBtn">↺ รีเซ็ตตำแหน่ง</button>'
+      +'<button class="mini" id="exportAutoBtn" title="ไฟล์สำหรับใช้กับระบบ Automation/Make.com">📤 Export Automation</button>'
+      +'</div>'
+      +'<label class="mini" style="cursor:pointer;margin-top:10px">🖼️ เปลี่ยน Pattern (ช่องนี้)<input type="file" id="patUpload" accept="image/png,image/jpeg" hidden></label>'
+      +'<div class="mp-caption" style="white-space:pre-wrap;font-size:13px;margin-top:14px;color:var(--muted)">'+cap+'</div>'
+      +'<div class="mp-tag" style="font-size:12px;color:var(--jade);margin-top:6px">'+tag+'</div>';
+    elResults.innerHTML='';elResults.appendChild(wrap);
+    renderSlotBar();
+
+    const stage=document.getElementById('editorStage');
+    boxes.forEach(b=>stage.appendChild(makeBoxEl(b,stage)));
+
+    document.getElementById('saveImgBtn').onclick=()=>exportImage(imgSrc);
+    document.getElementById('addBoxBtn').onclick=()=>addBox(stage);
+    document.getElementById('saveSlotBtn').onclick=()=>saveCurrentToSlot(imgSrc);
+    document.getElementById('delSlotBtn').onclick=()=>{
+      pSlots[S[ACTIVE_KEY]]={img:null,layout:null};
+      if(savePatternSlots())toast('ลบช่อง '+(S[ACTIVE_KEY]+1)+' แล้ว');
+      const next=pSlots.findIndex(s=>s.img);
+      selectSlot(next>=0?next:S[ACTIVE_KEY]);
+    };
+    document.getElementById('resetBoxBtn').onclick=()=>{
+      if(!confirm('รีเซ็ตกลับเป็นกล่องเริ่มต้นทั้งหมด? (กล่องที่เพิ่มเองจะถูกลบ กล่องที่ลบไปจะกลับมา)'))return;
+      stage.querySelectorAll('.ebox').forEach(el=>el.remove());
+      boxes=defaultBoxes();
+      boxes.forEach(b=>stage.appendChild(makeBoxEl(b,stage)));
+      toast('รีเซ็ตตำแหน่งแล้ว');
+    };
+    document.getElementById('exportAutoBtn').onclick=()=>{
+      const{layout,extra}=currentLayoutSplit();
+      const data=JSON.stringify({img:imgSrc,layout,extra});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+      a.download=storageKey+'-pattern.json';a.click();
+      toast('ดาวน์โหลด '+storageKey+'-pattern.json แล้ว — เอาไฟล์นี้ไปวางไว้ข้าง duang-studio.html บน hosting');
+    };
+    bindUpload();
+    const ca=document.getElementById('copyAllText');if(ca)ca.onclick=()=>copy(cap+'\n\n'+tag,'คัดลอกแล้ว');
+    elToolbar.style.display='flex';elCount.textContent=countLabel;
+  }
+
+  /* เริ่มต้น */
+  if(cfg.autoPost){
+    postHeadless(cfg.autoPost.slot,cfg.autoPost.webhookUrl)
+      .then(()=>markAutoStatus('done'))
+      .catch(e=>markAutoStatus('error',e&&e.message||String(e)));
+    return;
+  }
+  buildEditor(pSlots[S[ACTIVE_KEY]]?.img||null);
+}
+
+function runMoneyInfographic(sky,items,autoOpts){
+  /* คำนวณโทนของแต่ละราศีก่อน แล้วแจกคำพยากรณ์แบบสุ่มไม่ซ้ำภายในกลุ่มโทนเดียวกัน
+     (กระจายให้ครบรอบคลังคำก่อนค่อยวนซ้ำ ลดโอกาสคำซ้ำกันระหว่าง 12 ราศีในสัปดาห์เดียว) */
+  const signScores=SIGNS.map((sign,i)=>({sign,sc:scoreZodiac(i,sky)}));
+  const groups={};
+  signScores.forEach((o,i)=>{const t=o.sc.tones.money;(groups[t]=groups[t]||[]).push(i);});
+  const assignedIdx={};
+  Object.keys(groups).forEach(tone=>{
+    const signIdxs=groups[tone],bankLen=BANK.money[tone].length;
+    let pool=[],pass=0;
+    while(pool.length<signIdxs.length){
+      pool=pool.concat(seededShuffle(wordSeed('money_pool_'+tone+'_p'+pass),Array.from({length:bankLen},(_,k)=>k)));
+      pass++;
+    }
+    signIdxs.forEach((signIdx,k)=>{assignedIdx[signIdx]=pool[k];});
+  });
+  const moneyLines=signScores.map(({sign,sc},i)=>{
+    const tone=sc.tones.money,raw=BANK.money[tone][assignedIdx[i]];
+    return{sign,sc,txt:raw,raw};
+  });
+  const wr=weekRange(S.date);
+
+  /* ── พิกัดเริ่มต้นของกล่องข้อความ (% ของรูป pattern 816×1450) — ผู้ใช้ลาก/ปรับขนาด/แก้คำเองได้ทุกกล่อง ── */
+  const SLOTS=[
+    [185,384,345,480],  [575,384,715,480],
+    [185,572,345,666],  [575,572,715,666],
+    [185,757,345,861],  [575,757,715,861],
+    [185,934,345,1020], [575,934,715,1020],
+    [185,1093,345,1177],[575,1093,715,1177],
+    [185,1249,345,1319],[575,1249,715,1319],
+  ];
+  const DATE_SLOT=[215,240,590,290];
+
+  const cap='🚨 เปิดคลังรับทรัพย์กลางเดือน! เช็กดวงการเงิน 12 ราศี ประจำวันที่ '+weekRangeFull(S.date)+' 🚨\n'+
+    'วันนี้ดวงเปลี่ยน ฟ้าเปิดแล้วค๊าา! เพจ #ปลดหนี้มีโชค นำคำทำนายดวงชะตาโชคลาภแม่นๆ ประจำสัปดาห์มาเสิร์ฟถึงที่ เจาะลึกราศีไหนเงินทองไหลมาเพื่อปลดหนี้ ราศีไหนโชคใหญ่หล่นทับ เลื่อนอ่านได้เลยน้าา 💰✨\n\n'+
+    'ขอให้อานุภาพแห่งความศรัทธาหนุนนำให้ลูกเพจทุกท่านที่เห็นโพสต์นี้ เงินทองไม่ขาดมือ หนี้สินคลี่คลายกลายเป็นเงินทองกองเต็มบ้าน มีกินมีใช้ไม่รู้จบนะคะ 🙏💛\n\n'+
+    moneyLines.map(({sign,raw})=>sign.em+' '+sign.th+'\n'+raw).join('\n\n');
+  const tag='#ปลดหนี้มีโชค #ดวงการเงิน12ราศี #เช็กดวงรายสัปดาห์ #โชคลาภ #เงินทองไหลมาเทมา #ดูดวง';
+  items.push({title:'Infographic การเงิน',cap,tag,img:'',quote:''});
+  S.last=items;
+
+  renderInfographicEditor({
+    storageKey:'money',baseW:816,baseH:1450,
+    makeDefaultBoxes:()=>{
+      const arr=SLOTS.map((s,i)=>({id:'z'+i,rectPx:s,fontPct:4.0,color:'#260a00',text:moneyLines[i].raw}));
+      arr.push({id:'date',rectPx:DATE_SLOT,fontPct:3.0,color:'#f1d488',text:'ประจำวันที่ '+wr});
+      return arr;
+    },
+    cap,tag,
+    header:'💰 ลากกล่อง (✥) ปรับขนาด (มุมขวาล่าง) แก้คำได้เลย แล้วกด "บันทึกเป็นภาพ"',
+    countLabel:'Infographic การเงิน · '+wr,
+    filenamePrefix:'ดวงการเงิน_'+S.date,
+    autoPost:autoOpts,
+  });
+}
+
+function runLuckyInfographic(sky,items,autoOpts){
+  const day=THAI_DAY[sky.wd],nd=dayNumerology(skyDateFor()),ph=moonPhase(sky);
+  const two=String((Math.floor(sky.P.moon.lon)+Math.floor(sky.P.sun.lon))%100).padStart(2,'0');
+  const three=String((Math.floor(sky.P.moon.lon)*Math.floor(sky.P.venus.lon))%1000).padStart(3,'0');
+  const bless=rngPick(wordSeed('bless'),["ขอให้วันนี้เต็มไปด้วยโชคลาภและรอยยิ้ม","เงินทองไหลมาเทมา หนี้สินมลายหายไป","คิดสิ่งใดสมปรารถนาทุกประการ","โชคดีมีชัย ร่ำรวยเงินทอง","ปลดหนี้ มีโชค ร่ำรวยตลอดปี"]);
+  const cap=`🔮 เลข·สี·ดาวมงคล ${thDate(S.date)}\n\n🔢 เลขนำโชค 2 ตัว: ${two}\n🔢 เลขนำโชค 3 ตัว: ${three}\n🍀 เลขศาสตร์วันนี้: ${nd} (${NUM_MEANING[nd]})\n🎨 สีมงคล: ${day.mong[0]} | 🚫 กาลกิณี: ${day.kala[0]}\n⏰ ช่วงเวลาดี: ${day.time}\n🌙 ${ph.label} (${ph.illum}%)\n\n✨ ${bless}`;
+  const tag=hashtagsFor('เลขมงคล');
+  items.push({title:'เลขมงคล',cap,tag,img:imgPrompt('lucky golden numbers and coins under stars','เลขมงคล'),quote:bless});
+  S.last=items;
+
+  /* ── พิกัดกล่อง (% ของรูป pattern 896×1200 — แมวกวักถือเหรียญทอง) ── */
+  const DATE_SLOT=[199,210,697,314];
+  const ITEM_SLOTS=[
+    [261,356,550,455], /* เลข 2 ตัว */
+    [335,484,629,584], /* เลข 3 ตัว */
+    [366,613,731,712], /* เลขศาสตร์ */
+    [466,741,743,844], /* สีมงคล */
+    [477,869,845,972], /* สีกาลกิณี */
+  ];
+
+  renderInfographicEditor({
+    storageKey:'lucky',baseW:896,baseH:1200,
+    makeDefaultBoxes:()=>[
+      {id:'date',rectPx:DATE_SLOT,fontPct:3.4,color:'#3a2406',text:'ประจำวันที่ '+thDate(S.date)},
+      {id:'n2',rectPx:ITEM_SLOTS[0],fontPct:6.5,color:'#3a2406',text:two},
+      {id:'n3',rectPx:ITEM_SLOTS[1],fontPct:6.5,color:'#3a2406',text:three},
+      {id:'numerology',rectPx:ITEM_SLOTS[2],fontPct:4.5,color:'#3a2406',text:'เลขศาสตร์ '+nd+' '+NUM_MEANING[nd]},
+      {id:'mong',rectPx:ITEM_SLOTS[3],fontPct:5.0,color:'#3a2406',text:'สีมงคล '+day.mong[0]},
+      {id:'kala',rectPx:ITEM_SLOTS[4],fontPct:5.0,color:'#3a2406',text:'เลี่ยงสี '+day.kala[0]},
+    ],
+    cap,tag,
+    header:'🔢 ลากกล่อง (✥) ปรับขนาด (มุมขวาล่าง) แก้คำได้เลย แล้วกด "บันทึกเป็นภาพ"',
+    countLabel:'Infographic เลข·สีมงคล · '+thDate(S.date),
+    filenamePrefix:'เลขสีมงคล_'+S.date,
+    autoPost:autoOpts,
+  });
+}
+
+/* ---------- clipboard / share / export ---------- */
+function copy(text,msg){navigator.clipboard?.writeText(text).then(()=>toast(msg||'คัดลอกแล้ว'),()=>fb(text,msg));function fb(t,m){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(m||'คัดลอกแล้ว');}catch(e){toast('คัดลอกไม่สำเร็จ');}ta.remove();}}
+function allText(){return S.last.map(i=>i.cap+'\n\n'+i.tag).join('\n\n━━━━━━━━━━━━━━━\n\n');}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900);}
+document.getElementById('copyAll').onclick=()=>copy(allText(),'คัดลอกทั้งหมดแล้ว ('+S.last.length+' รายการ)');
+document.getElementById('exportTxt').onclick=()=>{const b=new Blob([allText()],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ดวง_'+S.date+'.txt';a.click();URL.revokeObjectURL(a.href);toast('บันทึกไฟล์แล้ว');};
+document.getElementById('pin').onclick=()=>{const d=encodeURIComponent((S.last[0]?.quote||'ดูดวง')+' '+(S.last[0]?.tag||''));window.open('https://www.pinterest.com/pin/create/button/?description='+d,'_blank');};
+document.getElementById('fb').onclick=()=>{copy(allText(),'คัดลอกข้อความแล้ว — วางในโพสต์ Facebook ได้เลย');window.open('https://www.facebook.com/','_blank');};
+
+/* ---------- tabs & controls ---------- */
+document.getElementById('tabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(!t)return;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');S.mod=t.dataset.mod;saveState();renderActions();
+  elResults.innerHTML='<div class="empty"><div class="big">🔮</div>กดปุ่มสีทองด้านบนเพื่อสร้างคอนเทนต์หมวดนี้</div>';elToolbar.style.display='none';});
+document.getElementById('bdaySel').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#bdaySel button').forEach(x=>x.classList.remove('on'));b.classList.add('on');S.bday=+b.dataset.d;saveState();});
+const dateIn=document.getElementById('dateIn');dateIn.value=S.date;
+dateIn.onchange=()=>{S.date=dateIn.value||todayISO();document.getElementById('sealDate').textContent=thDate(S.date);};
+
+/* ---------- init ---------- */
+loadState();
+try{localStorage.removeItem('duang_deck');}catch(e){} /* ล้างสำรับไพ่กำหนดเองรุ่นเก่า — ใช้ไพ่ทาโรต์มาตรฐานเสมอแล้ว */
+document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.mod===S.mod));
+document.querySelectorAll('#bdaySel button').forEach(b=>b.classList.toggle('on',+b.dataset.d===S.bday));
+document.getElementById('sealDate').textContent=thDate(S.date);
+renderActions();
+
+/* ============================================================
+   โหมด Automation (headless) — เปิดหน้านี้ด้วย
+   ?auto=lucky&webhook=https://hook.make.com/xxxxx  หรือ  ?auto=money&webhook=...
+   จะโหลด <auto>-pattern.json (ไฟล์ที่ Export ไว้จากปุ่ม "📤 Export Automation")
+   ที่วางไว้ข้าง duang-studio.html บน hosting แล้ววาดภาพ+ส่งเข้า Make.com webhook ทันที
+   ไม่แสดง UI editor — ใช้สำหรับสั่งรันด้วย headless browser ตามตารางเวลาเท่านั้น
+   ============================================================ */
+(function(){
+  const qs=new URLSearchParams(location.search);
+  const auto=qs.get('auto'),webhook=qs.get('webhook');
+  if(!auto||!webhook)return;
+  S.mod=auto;S.date=todayISO();
+  fetch('./'+auto+'-pattern.json').then(r=>{
+    if(!r.ok)throw new Error('โหลด '+auto+'-pattern.json ไม่สำเร็จ: HTTP '+r.status);
+    return r.json();
+  }).then(slot=>{
+    const sky=computeSky(skyDateFor());
+    const items=[];
+    if(auto==='lucky')runLuckyInfographic(sky,items,{webhookUrl:webhook,slot});
+    else if(auto==='money')runMoneyInfographic(sky,items,{webhookUrl:webhook,slot});
+    else throw new Error('ไม่รู้จักโหมด auto: '+auto);
+  }).catch(e=>{
+    document.title='AUTO_ERROR';
+    const el=document.createElement('div');el.id='autoStatus';el.setAttribute('data-status','error');
+    el.textContent=e&&e.message||String(e);document.body.appendChild(el);
+  });
+})();
+</script>
+</body>
+</html>

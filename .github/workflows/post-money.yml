@@ -1,0 +1,26 @@
+name: Post Money Fortune Weekly
+
+on:
+  schedule:
+    # ทุกวันอาทิตย์ 12:46 น. เวลาไทย (UTC+7) = 05:46 UTC
+    - cron: '46 5 * * 0'
+  workflow_dispatch: {}
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        working-directory: automation
+        run: npm install
+      - name: Run automation (post to Make.com)
+        working-directory: automation
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          MAKE_WEBHOOK_MONEY: ${{ secrets.MAKE_WEBHOOK_MONEY }}
+          TZ: Asia/Bangkok
+        run: node run-post.js money
